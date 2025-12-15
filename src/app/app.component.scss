@@ -1,0 +1,18 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #fff7fa 0%, #ffeef5 40%, #fff7fa 100%);
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  color: #5a2d3a;
+}
+
+.app-shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 20px 40px;
+}
+
+.page-body {
+  padding-top: 20px;
+}
+
