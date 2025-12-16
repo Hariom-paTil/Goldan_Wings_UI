@@ -27,6 +27,22 @@ export class CartService {
     this.sync();
   }
 
+  increaseQuantity(cakeId: number) {
+    const existing = this.items.get(cakeId);
+    if (existing) {
+      existing.quantity += 1;
+      this.sync();
+    }
+  }
+
+  decreaseQuantity(cakeId: number) {
+    const existing = this.items.get(cakeId);
+    if (existing) {
+      existing.quantity = Math.max(1, existing.quantity - 1);
+      this.sync();
+    }
+  }
+
   remove(cakeId: number) {
     this.items.delete(cakeId);
     this.sync();

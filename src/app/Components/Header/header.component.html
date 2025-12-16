@@ -12,11 +12,10 @@
     <a routerLink="/about" routerLinkActive="nav__link--active" class="nav__link">About</a>
     <a routerLink="/contacts" routerLinkActive="nav__link--active" class="nav__link">Contacts</a>
     <button class="nav__link nav__link--button" (click)="openOrder()">Order</button>
-    <a routerLink="/about/order" routerLinkActive="nav__link--active" class="nav__link">Cakes</a>
   </nav>
 
   <div class="actions">
-    <button class="icon-button cart-button" aria-label="Open cart">
+    <button class="icon-button cart-button" aria-label="Open cart" (click)="openCart()">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path
           d="M7 4h-2l-1 2m0 0 2 10h11l2-8H6.2m-2.2-2H21"
@@ -54,5 +53,11 @@
 
   <!-- Order modal -->
   <app-order-modal *ngIf="showOrder" (close)="closeOrder()"></app-order-modal>
+
+  <!-- Cart modal -->
+  <app-cart-modal *ngIf="showCart" (close)="closeCart()" (checkout)="openOrderConfirm()"></app-cart-modal>
+
+  <!-- Order confirm modal (checkout) -->
+  <app-order-confirm *ngIf="showOrderConfirm" (close)="closeOrderConfirm()"></app-order-confirm>
 </header>
 

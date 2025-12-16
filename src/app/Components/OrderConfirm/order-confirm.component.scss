@@ -1,0 +1,15 @@
+:host { position: fixed; inset: 0; display:flex; align-items:center; justify-content:center; z-index:1500 }
+.modal-overlay { position:absolute; inset:0; background: rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center }
+.modal { background:#fff; width: min(980px, 96%); border-radius:10px; overflow:hidden; box-shadow:0 20px 48px rgba(0,0,0,0.25); display:flex; flex-direction:column }
+.modal__header { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid #eee }
+.modal__content.two-col { display:grid; grid-template-columns: 1fr 1fr; gap:18px; padding:16px }
+.left { padding:8px }
+.order-item { display:flex; gap:12px; align-items:center; padding:8px 0; border-bottom:1px solid #f2f2f2 }
+.order-item img { width:72px; height:64px; object-fit:cover; border-radius:6px }
+.total { margin-top:12px; font-weight:800; }
+.right label { display:block; margin-bottom:8px }
+.right input, .right textarea { width:100%; box-sizing:border-box; padding:8px; border:1px solid #ddd; border-radius:6px }
+.actions { display:flex; gap:8px; justify-content:flex-end; margin-top:12px }
+.btn.confirm { background:#27ae60; color:#fff; border:none; padding:8px 12px; border-radius:8px }
+.btn.secondary { background:#f2f2f2; border:none; padding:8px 12px; border-radius:8px }
+.empty { color:#6b4a4f; padding:18px 0 }

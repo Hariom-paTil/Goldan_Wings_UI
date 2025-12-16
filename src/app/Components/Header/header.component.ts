@@ -3,6 +3,8 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SignupComponent } from '../Signup/signup.component';
 import { OrderModalComponent } from '../OrderModal/order-modal.component';
+import { CartModalComponent } from '../CartModal/cart-modal.component';
+import { OrderConfirmComponent } from '../OrderConfirm/order-confirm.component';
 import { AuthService, User } from '../../Services/auth.service';
 import { Observable } from 'rxjs';
 import { CartService } from '../../Services/cart.service';
@@ -10,7 +12,7 @@ import { CartService } from '../../Services/cart.service';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, SignupComponent, OrderModalComponent],
+  imports: [CommonModule, RouterModule, SignupComponent, OrderModalComponent, CartModalComponent, OrderConfirmComponent],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
@@ -21,6 +23,9 @@ export class HeaderComponent {
   count$: Observable<number>;
 
   showOrder = false;
+  showCart = false;
+
+  showOrderConfirm = false;
 
   constructor(private auth: AuthService, private cart: CartService) {
     this.user$ = this.auth.user$;
@@ -41,6 +46,22 @@ export class HeaderComponent {
 
   closeOrder() {
     this.showOrder = false;
+  }
+
+  openCart() {
+    this.showCart = true;
+  }
+
+  closeCart() {
+    this.showCart = false;
+  }
+
+  openOrderConfirm() {
+    this.showOrderConfirm = true;
+  }
+
+  closeOrderConfirm() {
+    this.showOrderConfirm = false;
   }
 
   toggleMenu() {

@@ -1,0 +1,47 @@
+<div class="modal-overlay" role="dialog" aria-modal="true">
+  <div class="modal big">
+    <div class="modal__header">
+      <h3>Confirm Order</h3>
+      <button class="close" (click)="closeModal()">✕</button>
+    </div>
+
+    <div class="modal__content two-col">
+      <div class="left">
+        <h4>Selected Cakes</h4>
+        <div *ngIf="items.length===0" class="empty">No items in cart</div>
+        <div *ngFor="let it of items" class="order-item">
+          <img [src]="it.cake.imageUrl" [alt]="it.cake.name" />
+          <div class="meta">
+            <strong>{{ it.cake.name }}</strong>
+            <div>Qty: {{ it.quantity }}</div>
+            <div>$ {{ (it.cake.price * it.quantity) | number:'1.2-2' }}</div>
+          </div>
+        </div>
+        <div class="total">Total: <strong>$ {{ total.toFixed(2) }}</strong></div>
+      </div>
+
+      <div class="right">
+        <h4>Shipping & Contact</h4>
+        <form (ngSubmit)="submitOrder()">
+          <label>First name
+            <input [(ngModel)]="firstName" name="firstName" required />
+          </label>
+          <label>Last name
+            <input [(ngModel)]="lastName" name="lastName" required />
+          </label>
+          <label>Address
+            <textarea [(ngModel)]="address" name="address" rows="3" required></textarea>
+          </label>
+          <label>Email
+            <input [(ngModel)]="email" name="email" type="email" required />
+          </label>
+
+          <div class="actions">
+            <button type="button" class="btn secondary" (click)="closeModal()">Cancel</button>
+            <button type="submit" class="btn confirm" [disabled]="submitting || items.length===0">{{ submitting ? 'Placing...' : 'Confirm Order' }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
