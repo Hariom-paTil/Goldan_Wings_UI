@@ -1,0 +1,128 @@
+$footer-bg: linear-gradient(180deg, #2a1a22 0%, #241218 100%);
+$muted: rgba(255,255,255,0.8);
+$muted-weak: rgba(255,255,255,0.65);
+
+.site-footer {
+  background: $footer-bg;
+  color: #fff;
+  padding: 32px;
+  border-radius: 12px;
+  margin: 28px auto;
+  max-width: 1200px;
+  box-shadow: 0 20px 40px rgba(35,17,22,0.18);
+}
+
+.footer__inner {
+  display: grid;
+  grid-template-columns: 1fr 260px 200px;
+  gap: 20px 28px;
+  align-items: start;
+}
+
+.footer__brand {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.footer__brand img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid rgba(255,255,255,0.08);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+.brand__title {
+  font-weight: 900;
+  font-size: 1.05rem;
+}
+
+.brand__slogan {
+  font-size: 0.92rem;
+  opacity: 0.95;
+  color: $muted;
+}
+
+.footer__links h4,
+.footer__social h4 {
+  margin: 0 0 10px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.footer__links ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer__links li {
+  margin: 6px 0;
+}
+
+.footer__links a {
+  color: lighten(#ffd7e2, 2%);
+  text-decoration: none;
+  transition: color 160ms ease, transform 120ms ease;
+}
+
+.footer__links a:hover,
+.footer__links a:focus {
+  color: #fff;
+  transform: translateX(3px);
+}
+
+.icons {
+  display: flex;
+  gap: 12px;
+}
+
+.icon {
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.06);
+  border-radius: 10px;
+  color: #fff;
+  text-decoration: none;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.icon:hover,
+.icon:focus {
+  transform: translateY(-3px) scale(1.05);
+  background: rgba(255,255,255,0.12);
+}
+
+.footer__note {
+  margin-top: 20px;
+  text-align: center;
+  color: $muted-weak;
+  font-size: 0.9rem;
+  border-top: 1px solid rgba(255,255,255,0.03);
+  padding-top: 12px;
+}
+
+@media (max-width: 920px) {
+  .footer__inner {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .footer__brand img {
+    width: 56px;
+    height: 56px;
+  }
+}
+
+@media (max-width: 560px) {
+  .footer__inner {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .footer__note { text-align: left; }
+}
