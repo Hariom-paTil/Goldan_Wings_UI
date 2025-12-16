@@ -13,6 +13,9 @@
         <h4>{{ cake.name }}</h4>
         <p class="flavor">{{ cake.flavor }}</p>
         <p class="price">$ {{ cake.price }}</p>
+        <div class="card__actions">
+          <button class="btn add" (click)="cart.add(cake)">Add to cart</button>
+        </div>
       </div>
     </div>
   </div>

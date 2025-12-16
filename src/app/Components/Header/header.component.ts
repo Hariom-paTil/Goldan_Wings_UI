@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { SignupComponent } from '../Signup/signup.component';
 import { AuthService, User } from '../../Services/auth.service';
 import { Observable } from 'rxjs';
+import { CartService } from '../../Services/cart.service';
 
 @Component({
   selector: 'app-header',
@@ -16,9 +17,11 @@ export class HeaderComponent {
   showSignup = false;
   showMenu = false;
   user$: Observable<User | null>;
+  count$: Observable<number>;
 
-  constructor(private auth: AuthService) {
+  constructor(private auth: AuthService, private cart: CartService) {
     this.user$ = this.auth.user$;
+    this.count$ = this.cart.count$;
   }
 
   openSignup() {

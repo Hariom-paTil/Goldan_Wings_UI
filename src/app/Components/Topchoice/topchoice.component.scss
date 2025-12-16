@@ -59,6 +59,26 @@
   padding: 12px 14px;
 }
 
+.card__actions {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn.add {
+  background: linear-gradient(90deg, #ff8a65, #ff6b6b);
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.12s;
+}
+
+.btn.add:hover {
+  transform: translateY(-2px);
+}
 .card__body h4 {
   margin: 0 0 6px;
   font-size: 1rem;

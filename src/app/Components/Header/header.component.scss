@@ -173,6 +173,25 @@ app-signup {
   min-width: 120px;
 }
 
+.cart-button {
+  position: relative;
+}
+
+.cart-count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #ff6b6b;
+  color: #fff;
+  min-width: 20px;
+  height: 20px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  padding: 0 6px;
+}
+
 .menu-item {
   display: block;
   width: 100%;
