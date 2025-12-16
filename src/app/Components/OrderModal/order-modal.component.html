@@ -1,0 +1,31 @@
+<div class="modal-overlay" role="dialog" aria-modal="true">
+  <div class="modal large">
+    <div class="modal__header">
+      <h2>Order Cakes</h2>
+      <button class="close" (click)="closeModal()">✕</button>
+    </div>
+
+    <div class="modal__content">
+      <div *ngIf="loading" class="loading">Loading cakes…</div>
+      <div *ngIf="error" class="error">{{ error }}</div>
+
+      <div *ngIf="!loading && !error" class="cakes-grid">
+        <div class="card" *ngFor="let cake of cakes">
+          <div class="card__image"><img [src]="cake.imageUrl" [alt]="cake.name" /></div>
+          <div class="card__body">
+            <h4>{{ cake.name }}</h4>
+            <p class="flavor">{{ cake.flavor }}</p>
+            <p class="price">$ {{ cake.price }}</p>
+            <div class="actions">
+              <button class="btn add" (click)="addToCart(cake)">Add to cart</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal__footer">
+      <button class="btn secondary" (click)="closeModal()">Close</button>
+    </div>
+  </div>
+</div>

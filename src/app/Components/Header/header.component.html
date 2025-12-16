@@ -11,7 +11,7 @@
     <a routerLink="/" routerLinkActive="nav__link--active" class="nav__link">Home</a>
     <a routerLink="/about" routerLinkActive="nav__link--active" class="nav__link">About</a>
     <a routerLink="/contacts" routerLinkActive="nav__link--active" class="nav__link">Contacts</a>
-    <a routerLink="/about/order" routerLinkActive="nav__link--active" class="nav__link">Order</a>
+    <button class="nav__link nav__link--button" (click)="openOrder()">Order</button>
     <a routerLink="/about/order" routerLinkActive="nav__link--active" class="nav__link">Cakes</a>
   </nav>
 
@@ -51,5 +51,8 @@
 
   <!-- Sign up modal -->
   <app-signup *ngIf="showSignup" (close)="closeSignup()"></app-signup>
+
+  <!-- Order modal -->
+  <app-order-modal *ngIf="showOrder" (close)="closeOrder()"></app-order-modal>
 </header>
 
