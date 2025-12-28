@@ -3,7 +3,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { CartService } from '../../Services/cart.service';
-import { CakeService } from '../../Services/cake.service';
+import { CustomCakeService } from '../../Services/custom-cake.service';
 import { Cake } from '../../Interfaces/cake.interface';
 
 type SizeOption = { label: string; inc: number };
@@ -57,7 +57,7 @@ export class CustomizeComponent {
   loadingCustom = true;
   errorCustom: string | null = null;
 
-  constructor(private cart: CartService, private cakesApi: CakeService) {}
+  constructor(private cart: CartService, private cakesApi: CustomCakeService) {}
 
   ngOnInit() {
     this.loadingCustom = true;

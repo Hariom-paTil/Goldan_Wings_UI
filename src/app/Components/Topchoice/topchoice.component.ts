@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { CakeService } from '../../Services/cake.service';
+import { CakesService } from '../../Services/cakes.service';
 import { Cake } from '../../Interfaces/cake.interface';
 import { CartService } from '../../Services/cart.service';
 
@@ -15,9 +15,11 @@ import { CartService } from '../../Services/cart.service';
 export class TopchoiceComponent implements OnInit {
   cakes: Cake[] = [];
 
-  constructor(private cakeService: CakeService, public cart: CartService) {}
+  constructor(private cakeService: CakesService, public cart: CartService) {}
 
   ngOnInit(): void {
-    this.cakeService.getCakes(10).subscribe((data) => (this.cakes = data));
+    this.cakeService.getCakes(10).subscribe((data) => {
+      this.cakes = data;
+    });
   }
 }

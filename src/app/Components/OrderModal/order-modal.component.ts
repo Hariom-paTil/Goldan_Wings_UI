@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output, OnInit } from '@angular/core';
-import { CakeService } from '../../Services/cake.service';
+import { CakesService } from '../../Services/cakes.service';
 import { Cake } from '../../Interfaces/cake.interface';
 import { CartService } from '../../Services/cart.service';
 
@@ -18,7 +18,7 @@ export class OrderModalComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
-  constructor(private cakeService: CakeService, private cart: CartService) {}
+  constructor(private cakeService: CakesService, private cart: CartService) {}
 
   ngOnInit(): void {
     this.cakeService.getCakes(20).subscribe({
