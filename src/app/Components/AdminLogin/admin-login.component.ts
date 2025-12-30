@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AdminLoginService } from '../../Services/admin-login.service';
+import { AdminSessionService } from '../../Services/admin-session.service';
 
 @Component({
   selector: 'app-admin-login',
@@ -11,7 +12,7 @@ import { AdminLoginService } from '../../Services/admin-login.service';
   templateUrl: './admin-login.component.html',
   styleUrls: ['./admin-login.component.scss'],
 })
-export class AdminLoginComponent implements OnInit {
+export class AdminLoginComponent {
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
@@ -25,16 +26,9 @@ export class AdminLoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private adminLoginService: AdminLoginService
+    private adminLoginService: AdminLoginService,
+    private adminSession: AdminSessionService
   ) {}
-
-  ngOnInit(): void {
-    // Check if already logged in as admin
-    const adminToken = this.getAdminToken();
-    if (adminToken) {
-      this.router.navigate(['/about/G_W_AdminPanel/home']);
-    }
-  }
 
   submit() {
     if (this.form.invalid) return;
@@ -62,14 +56,9 @@ export class AdminLoginComponent implements OnInit {
         this.success = true;
         this.successMessage = 'Admin login successful! Redirecting...';
 
-        // Store admin token
+        // Store admin token only in memory for this session
         const adminToken = `admin_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        try {
-          if (typeof window !== 'undefined' && 'localStorage' in window) {
-            window.localStorage.setItem('admin_token', adminToken);
-            window.localStorage.setItem('admin_email', email);
-          }
-        } catch {}
+        this.adminSession.setToken(adminToken);
 
         // Redirect to admin home modal after 0.8 seconds
         setTimeout(() => {
@@ -97,15 +86,6 @@ export class AdminLoginComponent implements OnInit {
         this.error = msg;
       },
     });
-  }
-
-  private getAdminToken(): string | null {
-    try {
-      if (typeof window !== 'undefined' && 'localStorage' in window) {
-        return window.localStorage.getItem('admin_token');
-      }
-    } catch {}
-    return null;
   }
 
   goToHome() {
