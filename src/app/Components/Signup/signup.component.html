@@ -21,10 +21,18 @@
 
       <div class="actions">
         <button type="button" class="btn secondary" (click)="cancel()" [disabled]="loading">Cancel</button>
-        <button type="submit" class="btn primary" [disabled]="loading">{{ loading ? 'Signing in...' : 'Sign In' }}</button>
+        <button
+          type="submit"
+          class="btn primary"
+          [class.success-state]="success"
+          [disabled]="loading"
+        >
+          {{ success ? 'Happy Smile :)' : (loading ? 'Signing in...' : 'Sign In') }}
+        </button>
       </div>
 
       <p class="error" *ngIf="error">{{ error }}</p>
+      <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
     </form>
   </div>
 </div>

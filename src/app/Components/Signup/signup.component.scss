@@ -62,6 +62,14 @@ input {
   color: #fff;
 }
 
+.btn.primary.success-state {
+  background: #ffe066;
+  color: #5c3a00;
+  font-size: 1.2rem;
+  padding: 0.65rem 1.4rem;
+  font-weight: 600;
+}
+
 .btn.secondary {
   background: #f0f0f0;
   color: #333;
@@ -77,4 +85,12 @@ input {
   color: #c0392b;
   margin-top: 0.6rem;
   font-size: 0.9rem;
+}
+
+.success {
+  color: #2d8c2d;
+  margin-top: 0.6rem;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
 }

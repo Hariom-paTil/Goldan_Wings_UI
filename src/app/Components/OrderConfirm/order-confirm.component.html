@@ -1,4 +1,4 @@
-<div class="modal-overlay" role="dialog" aria-modal="true">
+<div class="modal-overlay" role="dialog" aria-modal="true" *ngIf="!showCelebration">
   <div class="modal big">
     <div class="modal__header">
       <h3>Confirm Order</h3>
@@ -46,3 +46,5 @@
     </div>
   </div>
 </div>
+
+<app-celebration *ngIf="showCelebration" (click)="hideCelebration()"></app-celebration>
