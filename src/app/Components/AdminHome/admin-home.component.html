@@ -52,6 +52,7 @@
   <div class="admin-home__body" *ngIf="currentSection === 'pop-orders'">
     <div class="section-container">
       <h2>Pending Orders</h2>
+      <p class="section-note">Compact view to keep data tidy and readable.</p>
       
       <!-- Loading State -->
       <div class="loading-state" *ngIf="loading">
@@ -68,20 +69,22 @@
         <table class="orders-table">
           <thead>
             <tr>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Email</th>
+              <th>Customer</th>
+              <th>Contact</th>
               <th>Address</th>
               <th>Cakes</th>
-              <th>Total Amount</th>
+              <th>Total</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let order of orders" class="order-row">
-              <td>{{ order.firstName }}</td>
-              <td>{{ order.lastName }}</td>
-              <td>{{ order.email }}</td>
-              <td>{{ order.address }}</td>
+              <td class="customer-cell">
+                <div class="customer-name">{{ order.firstName }} {{ order.lastName }}</div>
+              </td>
+              <td class="contact-cell">
+                <div class="contact-email">{{ order.email }}</div>
+              </td>
+              <td class="address-cell">{{ order.address }}</td>
               <td class="cakes-cell">
                 <div class="cakes-list">
                   <div *ngFor="let cake of order.cakes" class="cake-item">
@@ -109,10 +112,64 @@
   <div class="admin-home__body" *ngIf="currentSection === 'add-cakes'">
     <div class="section-container">
       <h2>Add New Cake</h2>
+      <p class="section-note">Send cake details to the API and keep the image path aligned with the file name.</p>
+
       <div class="add-cakes-content">
-        <p>Add new cake items to your inventory - to be implemented.</p>
-        <div class="placeholder">
-          <p>🍰 Add new cake form will appear here</p>
+        <div class="toast" *ngIf="addCakeToastVisible">
+          <span>🎉 {{ addCakeToastMessage }}</span>
+        </div>
+        <div class="add-cake-card">
+          <div class="add-cake-card__head">
+            <div>
+              <h3>New Cake Entry</h3>
+              <p>Provide name, flavor, price, and image. Image path follows the uploaded file name.</p>
+            </div>
+            <button type="button" class="ghost-btn" (click)="resetAddCakeForm()">Reset</button>
+          </div>
+
+          <form class="add-cake-form" [formGroup]="addCakeForm" (ngSubmit)="onSubmitAddCake()">
+            <div class="form-grid">
+              <label class="form-field">
+                <span class="label">Cake name</span>
+                <input type="text" placeholder="Chocolate Truffle" formControlName="name" />
+                <small class="hint">Bold primary name customers will see.</small>
+              </label>
+
+              <label class="form-field">
+                <span class="label">Flavor</span>
+                <input type="text" placeholder="Dark Chocolate" formControlName="flavor" />
+                <small class="hint">Keep it short and descriptive.</small>
+              </label>
+
+              <label class="form-field">
+                <span class="label">Price (₹)</span>
+                <input type="number" min="1" step="1" placeholder="499" formControlName="price" />
+                <small class="hint">Enter whole number price.</small>
+              </label>
+            </div>
+
+            <div class="form-field file-field">
+              <div class="file-row">
+                <div>
+                  <span class="label">Image upload</span>
+                  <small class="hint">Saved as /assets/Img/{{ selectedImageName || 'your-file' }}</small>
+                </div>
+                <input type="file" accept="image/*" (change)="onImageSelect($event)" />
+              </div>
+              <div class="image-preview" *ngIf="imagePreview || addCakeForm.value.imageUrl">
+                <img *ngIf="imagePreview" [src]="imagePreview" alt="Cake preview" />
+                <div class="image-url" *ngIf="addCakeForm.value.imageUrl">Path: {{ addCakeForm.value.imageUrl }}</div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button class="primary-btn" type="submit" [disabled]="addCakeLoading || addCakeForm.invalid">
+                {{ addCakeLoading ? 'Saving...' : 'Add Cake' }}
+              </button>
+              <span class="status success" *ngIf="addCakeSuccess">{{ addCakeSuccess }}</span>
+              <span class="status error" *ngIf="addCakeError">{{ addCakeError }}</span>
+            </div>
+          </form>
         </div>
       </div>
     </div>

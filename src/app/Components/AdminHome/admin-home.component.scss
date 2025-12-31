@@ -1,12 +1,14 @@
 .admin-home {
-  padding: 24px 20px 28px;
+  padding: 28px 28px 32px;
   background: linear-gradient(135deg, #fff7ee 0%, #ffffff 40%, #ffe2c8 100%);
   border-radius: 16px;
   border: 2px solid rgba(240, 134, 50, 0.35);
   box-shadow: 0 16px 32px rgba(240, 134, 50, 0.25);
   color: #2a1a1a;
   min-height: 240px;
-  max-width: 100%;
+  width: 100%;
+  max-width: none;
+  margin: 0;
 }
 
 .admin-home__header {
@@ -95,6 +97,14 @@
   color: #70401f;
 }
 
+.section-note {
+  margin-top: -4px;
+  margin-bottom: 12px;
+  color: #3f2a1f;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
 /* Admin Cards */
 .admin-cards {
   display: grid;
@@ -143,6 +153,194 @@
   padding: 20px;
 }
 
+.add-cakes-content {
+  padding-top: 12px;
+}
+
+.toast {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  background: #1e7e34;
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 12px;
+  box-shadow: 0 10px 22px rgba(30, 126, 52, 0.25);
+  font-weight: 800;
+  z-index: 10;
+  animation: fadeIn 0.2s ease;
+}
+
+.add-cake-card {
+  background: #ffffff;
+  border: 2px solid rgba(240, 134, 50, 0.25);
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(240, 134, 50, 0.12);
+  padding: 18px 18px 22px;
+}
+
+.add-cake-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.add-cake-card__head h3 {
+  margin: 0;
+  color: #c05a1c;
+}
+
+.add-cake-card__head p {
+  margin: 4px 0 0 0;
+  color: #70401f;
+  font-size: 0.95rem;
+}
+
+.ghost-btn {
+  border: 1px solid rgba(240, 134, 50, 0.5);
+  background: rgba(240, 134, 50, 0.08);
+  color: #c05a1c;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ghost-btn:hover {
+  background: rgba(240, 134, 50, 0.12);
+}
+
+.add-cake-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 1px solid rgba(240, 134, 50, 0.2);
+  border-radius: 10px;
+  background: rgba(240, 134, 50, 0.03);
+}
+
+.form-field .label {
+  font-weight: 800;
+  color: #1f130f;
+}
+
+.form-field input {
+  border: 1px solid rgba(240, 134, 50, 0.35);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1d120f;
+}
+
+.form-field input:focus {
+  outline: 2px solid rgba(240, 134, 50, 0.45);
+  border-color: rgba(240, 134, 50, 0.6);
+}
+
+.form-field .hint {
+  color: #5a3b2e;
+  font-size: 0.82rem;
+}
+
+.file-field {
+  gap: 10px;
+}
+
+.file-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.file-row input[type="file"] {
+  border: none;
+  font-weight: 600;
+  color: #c05a1c;
+}
+
+.image-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border: 1px dashed rgba(240, 134, 50, 0.4);
+  border-radius: 10px;
+  background: rgba(240, 134, 50, 0.06);
+}
+
+.image-preview img {
+  width: 96px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid rgba(240, 134, 50, 0.3);
+}
+
+.image-url {
+  font-weight: 700;
+  color: #1f130f;
+  font-size: 0.9rem;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.primary-btn {
+  border: none;
+  background: linear-gradient(135deg, #f08632 0%, #d97423 100%);
+  color: white;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(240, 134, 50, 0.25);
+  transition: all 0.2s ease;
+}
+
+.primary-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.primary-btn:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 24px rgba(240, 134, 50, 0.3);
+}
+
+.status {
+  font-weight: 700;
+}
+
+.status.success {
+  color: #1e7e34;
+}
+
+.status.error {
+  color: #dc3545;
+}
+
 .placeholder {
   background: rgba(240, 134, 50, 0.05);
   border: 2px dashed rgba(240, 134, 50, 0.3);
@@ -160,10 +358,11 @@
 /* Orders Table */
 .orders-table-wrapper {
   overflow-x: visible;
-  margin-top: 15px;
+  margin: 12px auto 0;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(240, 134, 50, 0.1);
   width: 100%;
+  max-width: 1100px;
 }
 
 .orders-table {
@@ -174,6 +373,7 @@
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   font-size: 0.9rem;
+  table-layout: auto;
 }
 
 .orders-table thead {
@@ -184,12 +384,24 @@
 }
 
 .orders-table th {
-  padding: 12px 14px;
+  padding: 10px 12px;
   border: none;
-  font-size: 0.85rem;
-  letter-spacing: 0.5px;
+  font-size: 0.8rem;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
-  font-weight: 700;
+  font-weight: 800;
+}
+
+.orders-table th:nth-child(1) {
+  width: 170px;
+}
+
+.orders-table th:nth-child(2) {
+  width: 210px;
+}
+
+.orders-table th:nth-child(3) {
+  width: 240px;
 }
 
 .orders-table tbody tr {
@@ -207,23 +419,43 @@
 }
 
 .orders-table td {
-  padding: 10px 14px;
-  color: #2a1a1a;
+  padding: 9px 12px;
+  color: #1d120f;
   font-size: 0.9rem;
   vertical-align: middle;
-  line-height: 1.4;
+  line-height: 1.35;
+  font-weight: 600;
 }
 
-.orders-table td:first-child,
-.orders-table td:nth-child(2) {
+.customer-cell .customer-name {
+  font-weight: 800;
+  color: #1a0f0c;
+  letter-spacing: 0.2px;
+}
+
+.contact-cell {
+  color: #2f1f1a;
   font-weight: 700;
-  color: #c05a1c;
-  font-size: 0.92rem;
+}
+
+.contact-email {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.address-cell {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 230px;
+  color: #2a1a1a;
+  font-weight: 700;
 }
 
 .cakes-cell {
-  max-width: 200px;
-  width: 200px;
+  max-width: none;
+  width: auto;
 }
 
 .cakes-list {
@@ -247,6 +479,8 @@
   color: #c05a1c;
   flex-grow: 1;
   font-size: 0.85rem;
+  white-space: normal;
+  overflow: visible;
 }
 
 .cake-price {

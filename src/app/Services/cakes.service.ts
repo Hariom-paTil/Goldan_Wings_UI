@@ -9,6 +9,7 @@ import { Cake } from '../Interfaces/cake.interface';
 })
 export class CakesService {
   private base = 'https://localhost:7196/api/Cakes';
+  private createBase = 'http://localhost:5003/api/Cakes';
 
   constructor(private http: HttpClient) {}
 
@@ -25,6 +26,10 @@ export class CakesService {
       ),
       catchError(() => of(this.fallbackCakes(limit)))
     );
+  }
+
+  addCake(payload: { flavor: string; name: string; price: number; imageUrl: string }): Observable<any> {
+    return this.http.post(this.createBase, payload);
   }
 
   private normalizeImage(src: string, index: number): string {
