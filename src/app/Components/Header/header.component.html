@@ -26,6 +26,14 @@
 
   <div class="actions">
     <ng-container *ngIf="!isAdminLoggedIn">
+      <button class="icon-button help-button" aria-label="Help" title="Help" (click)="openHelp()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.6" />
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="12" cy="20" r="1" fill="currentColor" />
+        </svg>
+      </button>
+
       <button class="icon-button cart-button" aria-label="Open cart" (click)="openCart()">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path
@@ -78,5 +86,8 @@
   
   <!-- Customize modal -->
   <app-customize *ngIf="showCustomize" (close)="closeCustomize()"></app-customize>
+
+  <!-- Help modal -->
+  <app-help *ngIf="showHelp" (close)="closeHelp()"></app-help>
 </header>
 

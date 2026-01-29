@@ -7,7 +7,10 @@
   <div *ngIf="cakes.length; else empty" class="topchoice__grid">
     <div class="card" *ngFor="let cake of cakes">
       <div class="card__image">
-        <img [src]="cake.imageUrl" [alt]="cake.name" />
+        <img [src]="cake.imageUrl" [alt]="cake.name" [attr.data-cake-id]="cake.id" (error)="onImgError($event)" />
+        <div class="img-warning" *ngIf="missingImages[cake.id]">
+          Missing image → {{ missingImages[cake.id] }}
+        </div>
       </div>
       <div class="card__body">
         <h4>{{ cake.name }}</h4>

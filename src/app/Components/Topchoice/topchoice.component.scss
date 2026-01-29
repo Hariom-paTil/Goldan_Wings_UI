@@ -65,6 +65,17 @@
   display: block;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
+.img-warning {
+  position: absolute;
+  inset: auto 8px 8px 8px;
+  background: rgba(220, 53, 69, 0.92);
+  color: #fff;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.35);
+}
 }
 
 .card__body {

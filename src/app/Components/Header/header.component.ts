@@ -10,11 +10,12 @@ import { Observable } from 'rxjs';
 import { CartService } from '../../Services/cart.service';
 import { CustomizeComponent } from '../Customize/customize.component';
 import { AdminSessionService } from '../../Services/admin-session.service';
+import { HelpComponent } from '../Help/help.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, SignupComponent, OrderModalComponent, CartModalComponent, OrderConfirmComponent, CustomizeComponent],
+  imports: [CommonModule, RouterModule, SignupComponent, OrderModalComponent, CartModalComponent, OrderConfirmComponent, CustomizeComponent, HelpComponent],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
@@ -29,6 +30,7 @@ export class HeaderComponent implements OnInit {
 
   showOrderConfirm = false;
   showCustomize = false;
+  showHelp = false;
 
   isAdminLoggedIn = false;
 
@@ -83,6 +85,14 @@ export class HeaderComponent implements OnInit {
 
   toggleMenu() {
     this.showMenu = !this.showMenu;
+  }
+
+  openHelp() {
+    this.showHelp = true;
+  }
+
+  closeHelp() {
+    this.showHelp = false;
   }
 
   logout() {

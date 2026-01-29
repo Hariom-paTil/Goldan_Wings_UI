@@ -17,6 +17,8 @@ export class OrderModalComponent implements OnInit {
   cakes: Cake[] = [];
   loading = true;
   error: string | null = null;
+  fallbackImage = '/assets/Img/img-1.jpg';
+  missingImages: Record<number, string> = {};
 
   constructor(private cakeService: CakesService, private cart: CartService) {}
 
@@ -35,6 +37,20 @@ export class OrderModalComponent implements OnInit {
 
   addToCart(cake: Cake) {
     this.cart.add(cake);
+  }
+
+  onImgError(event: Event) {
+    const target = event.target as HTMLImageElement;
+    if (target) {
+      const srcTried = target.src;
+      const id = Number(target.getAttribute('data-cake-id'));
+      if (!isNaN(id)) {
+        this.missingImages[id] = srcTried;
+      }
+      console.warn('Cake image missing:', srcTried);
+      target.src = this.fallbackImage;
+      target.onerror = null;
+    }
   }
 
   closeModal() {

@@ -8,24 +8,40 @@ import { Cake } from '../Interfaces/cake.interface';
   providedIn: 'root',
 })
 export class CakesService {
-  private base = 'https://localhost:7196/api/Cakes';
+  private base = 'http://localhost:5003/api/Cakes';
   private createBase = 'http://localhost:5003/api/Cakes';
+  private placeholder = '/assets/Img/img-1.jpg';
+  private uploadUrl = 'http://localhost:3000/upload';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  getCakes(limit: number = 10): Observable<Cake[]> {
-    return this.http.get<any[]>(`${this.base}?limit=${limit}`).pipe(
-      map((items: any[]) =>
-        (items || []).slice(0, limit).map((it: any, i: number) => ({
-          id: it.id ?? i + 1,
+  getCakes(limit: number = 50): Observable<Cake[]> {
+    return this.http.get<any[]>(this.base).pipe(
+      map((items: any[]) => {
+        const mapped = (items || []).map((it: any, i: number) => ({
+          id: this.parseId(it.id, i + 1),
           name: it.name ?? it.title ?? `Cake ${i + 1}`,
           flavor: it.flavor ?? it.flavour ?? undefined,
           imageUrl: this.normalizeImage(it.imageUrl ?? it.image ?? '', i + 1),
           price: this.parsePrice(it.price) ?? Math.round(10 + Math.random() * 40),
-        }))
-      ),
+        }));
+
+        const sorted = mapped.sort((a, b) => (b.id ?? 0) - (a.id ?? 0));
+        return sorted.slice(0, limit);
+      }),
       catchError(() => of(this.fallbackCakes(limit)))
     );
+  }
+
+  private parseId(id: any, fallback: number): number {
+    const num = Number(id);
+    return isNaN(num) ? fallback : num;
+  }
+
+  uploadImage(file: File): Observable<{ path: string }> {
+    const formData = new FormData();
+    formData.append('image', file);
+    return this.http.post<{ path: string }>(this.uploadUrl, formData);
   }
 
   addCake(payload: { flavor: string; name: string; price: number; imageUrl: string }): Observable<any> {
@@ -37,30 +53,53 @@ export class CakesService {
     clean = clean.replace(/assest/gi, 'assets');
     clean = clean.replace(/\\/g, '/');
 
-    if (!clean) return `/assets/Img/img-${index}.jpg`;
+    const imageLimit = 10; // number of images present in assets/Img
+
+    // Ensure leading slash and normalized folder case
+    const ensurePath = (path: string) => {
+      const normalized = path.replace(/\/assets\/img\//i, '/assets/Img/').replace(/assets\/img\//i, 'assets/Img/');
+      return normalized.startsWith('/') ? normalized : `/${normalized}`;
+    };
+
+    const mapToExistingImage = (path: string): string => {
+      const match = path.match(/(img-)(\d+)(\.(jpg|jpeg|png|webp|gif))/i);
+      if (!match) return path;
+      const num = Number(match[2]);
+      if (isNaN(num) || num <= imageLimit) return path;
+      const mapped = ((num - 1) % imageLimit) + 1; // cycle through available images
+      return path.replace(/img-\d+/i, `img-${mapped}`);
+    };
+
+    if (!clean) return this.placeholder;
 
     if (/^https?:\/\//i.test(clean)) {
       const assetsIndex = clean.toLowerCase().indexOf('/assets/');
       if (assetsIndex >= 0) {
         let sub = clean.substring(assetsIndex);
-        sub = sub.replace(/\/assets\/img\//i, '/assets/Img/');
+        sub = ensurePath(sub);
+        sub = mapToExistingImage(sub);
         return sub;
       }
       return clean;
     }
 
     if (clean.startsWith('/assets/')) {
-      return clean.replace(/\/assets\/img\//i, '/assets/Img/');
+      const path = mapToExistingImage(ensurePath(clean));
+      return path;
     }
-    if (clean.startsWith('assets/')) return `/${clean.replace(/assets\/img\//i, 'assets/Img/')}`;
+    if (clean.startsWith('assets/')) {
+      const path = mapToExistingImage(ensurePath(clean));
+      return path;
+    }
 
-    if (clean.startsWith('/')) return `https://localhost:7196${clean}`;
+    if (clean.startsWith('/')) return mapToExistingImage(clean);
 
     if (/^(uploads|images|files)\//i.test(clean)) {
-      return `https://localhost:7196/${clean}`;
+      return mapToExistingImage(clean);
     }
 
-    return `/assets/Img/${clean}`;
+    const assetPath = mapToExistingImage(`/assets/Img/${clean}`);
+    return assetPath;
   }
 
   private parsePrice(val: any): number | null {

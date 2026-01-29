@@ -1,0 +1,60 @@
+<div class="modal-overlay" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Help & Support</h2>
+      <button class="close-btn" aria-label="Close help" (click)="closeModal()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="help-section">
+        <h3>Getting Started</h3>
+        <ul>
+          <li>Browse our delicious cake collection in the <strong>Cakes</strong> menu</li>
+          <li>Use <strong>Customize</strong> to design your own custom cake</li>
+          <li>Add items to your cart and proceed to checkout</li>
+          <li>Create an account or checkout as a guest</li>
+        </ul>
+      </div>
+
+      <div class="help-section">
+        <h3>How to Order</h3>
+        <ol>
+          <li>Select your favorite cake or create a custom design</li>
+          <li>Choose size, flavor, and toppings</li>
+          <li>Add to cart and review your order</li>
+          <li>Proceed to checkout and enter delivery details</li>
+          <li>Complete payment to confirm your order</li>
+        </ol>
+      </div>
+
+      <div class="help-section">
+        <h3>Account Management</h3>
+        <ul>
+          <li>Click the avatar icon to access your account menu</li>
+          <li>Sign up to save your preferences and order history</li>
+          <li>Track your orders in the order confirmation page</li>
+          <li>Use logout to securely exit your account</li>
+        </ul>
+      </div>
+
+      <div class="help-section">
+        <h3>Custom Cakes</h3>
+        <ul>
+          <li>Upload a cake design image for reference</li>
+          <li>Specify size, flavors, and dietary requirements</li>
+          <li>Leave special instructions for our bakers</li>
+          <li>Contact us for bulk orders or special occasions</li>
+        </ul>
+      </div>
+
+      <div class="help-section">
+        <h3>Contact Us</h3>
+        <p>For additional support, visit our <a href="/contacts" class="help-link">Contacts</a> page or reach out to our customer service team.</p>
+      </div>
+    </div>
+  </div>
+</div>

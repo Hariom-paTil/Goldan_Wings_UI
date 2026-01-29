@@ -23,6 +23,7 @@ export class AdminHomeComponent implements OnInit {
   addCakeError: string | null = null;
   addCakeSuccess: string | null = null;
   selectedImageName: string | null = null;
+  selectedFile: File | null = null;
   imagePreview: string | null = null;
   addCakeToastVisible = false;
   addCakeToastMessage = '';
@@ -34,7 +35,7 @@ export class AdminHomeComponent implements OnInit {
     private ordersService: OrdersService,
     private cakesService: CakesService,
     private formBuilder: FormBuilder
-  ) {}
+  ) { }
 
   ngOnInit() {
     // Check if we need to navigate to a specific section based on URL
@@ -90,6 +91,7 @@ export class AdminHomeComponent implements OnInit {
     const file = input.files?.[0];
     if (!file) return;
 
+    this.selectedFile = file;
     const safeName = this.sanitizeFileName(file.name);
     this.selectedImageName = safeName;
     const imageUrl = `/assets/Img/${safeName}`;
@@ -107,30 +109,48 @@ export class AdminHomeComponent implements OnInit {
     }
 
     const { name, flavor, price, imageUrl } = this.addCakeForm.value;
-    const payload = {
-      name: (name || '').trim(),
-      flavor: (flavor || '').trim(),
-      price: Number(price),
-      imageUrl: (imageUrl || '').trim(),
-    };
 
     this.addCakeLoading = true;
     this.addCakeError = null;
     this.addCakeSuccess = null;
 
-    this.cakesService.addCake(payload).subscribe({
-      next: () => {
-        this.addCakeLoading = false;
-        this.addCakeSuccess = 'Cake added successfully.';
-        this.showAddCakeToast('Cake added successfully.');
-        this.resetAddCakeForm();
-      },
-      error: (err) => {
-        console.error('Error adding cake:', err);
-        this.addCakeLoading = false;
-        this.addCakeError = 'Failed to add cake. Please try again.';
-      }
-    });
+    const submitCake = (finalImageUrl: string) => {
+      const payload = {
+        name: (name || '').trim(),
+        flavor: (flavor || '').trim(),
+        price: Number(price),
+        imageUrl: (finalImageUrl || '').trim(),
+      };
+
+      this.cakesService.addCake(payload).subscribe({
+        next: () => {
+          this.addCakeLoading = false;
+          this.addCakeSuccess = 'Cake added successfully.';
+          this.showAddCakeToast('Cake added successfully.');
+          this.resetAddCakeForm();
+        },
+        error: (err) => {
+          console.error('Error adding cake:', err);
+          this.addCakeLoading = false;
+          this.addCakeError = 'Failed to add cake. Please try again.';
+        }
+      });
+    };
+
+    if (this.selectedFile) {
+      this.cakesService.uploadImage(this.selectedFile).subscribe({
+        next: (res) => {
+          submitCake(res.path);
+        },
+        error: (err) => {
+          console.error('Error uploading image:', err);
+          this.addCakeLoading = false;
+          this.addCakeError = 'Failed to upload image. Ensure upload server is running.';
+        }
+      });
+    } else {
+      submitCake(imageUrl);
+    }
   }
 
   resetAddCakeForm() {
@@ -138,6 +158,7 @@ export class AdminHomeComponent implements OnInit {
     this.addCakeError = null;
     this.addCakeSuccess = null;
     this.selectedImageName = null;
+    this.selectedFile = null;
     this.imagePreview = null;
   }
 
