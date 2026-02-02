@@ -21,6 +21,7 @@ export class CustomizeComponent {
   @Output() close = new EventEmitter<void>();
 
   cakes: Cake[] = [];
+  imageCakes: Cake[] = [];
 
   sizes: SizeOption[] = [
     { label: '6"', inc: 0 },
@@ -57,14 +58,15 @@ export class CustomizeComponent {
   loadingCustom = true;
   errorCustom: string | null = null;
 
-  constructor(private cart: CartService, private cakesApi: CustomCakeService) {}
+  constructor(private cart: CartService, private cakesApi: CustomCakeService) { }
 
   ngOnInit() {
     this.loadingCustom = true;
     this.errorCustom = null;
-    this.cakesApi.getCustomCakes(12).subscribe({
-      next: (list) => {
-        this.cakes = list;
+    this.cakesApi.getSeparatedCakes().subscribe({
+      next: (res) => {
+        this.cakes = res.normalCakes;
+        this.imageCakes = res.imageCakes;
         this.loadingCustom = false;
       },
       error: (err) => {
@@ -87,8 +89,8 @@ export class CustomizeComponent {
     this.detailOpen = true;
   }
 
-  openImageDetail() {
-    this.selectedCake = { id: 999001, name: 'Photo Cake Base', imageUrl: 'assets/Img/img-10.jpg', price: 24 };
+  openImageDetail(cake?: Cake) {
+    this.selectedCake = cake || { id: 999001, name: 'Photo Cake Base', imageUrl: 'assets/Img/img-10.jpg', price: 24 };
     this.selectedSize = this.sizes[0];
     this.selectedFlavor = this.flavors[0];
     this.selectedFlower = this.flowers[0];

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Cake } from '../Interfaces/cake.interface';
+import { CustomCakeData } from '../Interfaces/custom-cake-data.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -10,25 +11,53 @@ import { Cake } from '../Interfaces/cake.interface';
 export class CustomCakeService {
   private customizeBase = 'https://localhost:7196/api/CakeCustomize';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
+
+  getCustomCakeList(): Observable<CustomCakeData[]> {
+    return this.http.get<CustomCakeData[]>('https://localhost:7196/api/CustomCake');
+  }
 
   getCustomCakes(limit: number = 12): Observable<Cake[]> {
-    return this.http.get<any>(`${this.customizeBase}?limit=${limit}`).pipe(
-      map((resp: any) => {
-        const items: any[] = Array.isArray(resp) ? resp : resp?.data ?? resp?.result ?? [];
-
-        return items.slice(0, limit).map((it: any, i: number) => ({
-          id: it.id ?? it.cakeId ?? 10000 + i + 1,
-          name: it.name ?? it.title ?? it.cakeName ?? `Custom Cake ${i + 1}`,
-          flavor: it.flavor ?? it.flavour ?? undefined,
-          imageUrl: this.normalizeImage(
-            it.imageUrl ?? it.imageURL ?? it.ImageUrl ?? it.image ?? it.imgUrl ?? it.imagePath ?? '',
-            (i % 10) + 1
-          ),
-          price: this.parsePrice(it.price ?? it.Price ?? it.amount ?? it.cost) ?? Math.round(20 + Math.random() * 30),
+    return this.getCustomCakeList().pipe(
+      map((items) => {
+        return items.slice(0, limit).map((it) => ({
+          id: it.customCakePK,
+          name: it.cakeName,
+          flavor: it.flower ? `Flower: ${it.flower}` : undefined,
+          imageUrl: this.normalizeImage(it.imageUrl || '', it.cakeId === 101 ? 10 : 1),
+          price: 25, // Default price
         }));
       }),
       catchError(() => of(this.fallbackCakes(limit)))
+    );
+  }
+
+  getSeparatedCakes(): Observable<{ imageCakes: Cake[]; normalCakes: Cake[] }> {
+    return this.getCustomCakeList().pipe(
+      map((items) => {
+        const imageCakesRaw = items.filter((x) => x.cakeId === 101);
+        const normalCakesRaw = items.filter((x) => x.cakeId !== 101);
+
+        const mapToCake = (list: CustomCakeData[]) =>
+          list.map((it) => ({
+            id: it.customCakePK,
+            name: it.cakeName,
+            flavor: it.flower ? `Flower: ${it.flower}` : undefined,
+            imageUrl: this.normalizeImage(it.imageUrl || '', it.cakeId === 101 ? 10 : 1),
+            price: 25,
+          }));
+
+        return {
+          imageCakes: mapToCake(imageCakesRaw),
+          normalCakes: mapToCake(normalCakesRaw),
+        };
+      }),
+      catchError(() =>
+        of({
+          imageCakes: [],
+          normalCakes: this.fallbackCakes(12),
+        })
+      )
     );
   }
 

@@ -11,15 +11,15 @@
         <div class="left-col">
           <h4 class="section-title">Image Cakes</h4>
           <div class="grid left-grid">
-            <div class="card photo-card hover-lift anim-slide-up">
-              <div class="card__image clickable" (click)="openImageDetail()">
-                <img src="assets/header_img.jpg" alt="Photo Cake" />
+            <div class="card photo-card hover-lift anim-slide-up" *ngFor="let cake of imageCakes">
+              <div class="card__image clickable" (click)="openImageDetail(cake)">
+                <img [src]="cake.imageUrl" [alt]="cake.name" />
               </div>
               <div class="card__body">
-                <h4>Photo Cake</h4>
-                <p class="price">$ 24</p>
+                <h4>{{ cake.name }}</h4>
+                <p class="price">$ {{ cake.price }}</p>
                 <div class="actions">
-                  <button class="btn add" (click)="openImageDetail()">Customize Photo</button>
+                  <button class="btn add" (click)="openImageDetail(cake)">Customize Photo</button>
                 </div>
               </div>
             </div>
