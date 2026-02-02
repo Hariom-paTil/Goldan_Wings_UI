@@ -234,13 +234,17 @@ export class AdminHomeComponent implements OnInit {
       next: (res) => {
         this.addCustomCakeLoading = false;
         this.addCustomCakeSuccess = 'Custom cake added successfully!';
-        this.addCustomCakeForm.reset({
+
+        // Reset form
+        this.addCustomCakeForm.reset();
+        this.addCustomCakeForm.patchValue({
           cakeId: 100,
           cakeName: '',
           cakeCommonSize: '1 Kg',
           flower: null,
           imageUrl: null
         });
+
         this.customCakeImagePreview = null;
         this.showAddCakeToast('Custom Cake added!');
       },
