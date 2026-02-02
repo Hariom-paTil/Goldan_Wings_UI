@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AdminSessionService } from '../../Services/admin-session.service';
 import { OrdersService, Order } from '../../Services/orders.service';
 import { CakesService } from '../../Services/cakes.service';
+import { CustomCakeService } from '../../Services/custom-cake.service';
 
 @Component({
   selector: 'app-admin-home',
@@ -14,7 +15,7 @@ import { CakesService } from '../../Services/cakes.service';
   styleUrls: ['./admin-home.component.scss'],
 })
 export class AdminHomeComponent implements OnInit {
-  currentSection: 'overview' | 'pop-orders' | 'add-cakes' = 'overview';
+  currentSection: 'overview' | 'pop-orders' | 'add-cakes' | 'add-custom-cakes' = 'overview';
   orders: Order[] = [];
   loading = false;
   error: string | null = null;
@@ -29,11 +30,19 @@ export class AdminHomeComponent implements OnInit {
   addCakeToastMessage = '';
   private addCakeToastTimer: any;
 
+  // Custom CAke
+  addCustomCakeForm!: FormGroup;
+  addCustomCakeLoading = false;
+  addCustomCakeError: string | null = null;
+  addCustomCakeSuccess: string | null = null;
+  customCakeImagePreview: string | null = null;
+
   constructor(
     private router: Router,
     private adminSession: AdminSessionService,
     private ordersService: OrdersService,
     private cakesService: CakesService,
+    private customCakeService: CustomCakeService,
     private formBuilder: FormBuilder
   ) { }
 
@@ -48,9 +57,10 @@ export class AdminHomeComponent implements OnInit {
     }
 
     this.initAddCakeForm();
+    this.initAddCustomCakeForm();
   }
 
-  setSection(section: 'overview' | 'pop-orders' | 'add-cakes') {
+  setSection(section: 'overview' | 'pop-orders' | 'add-cakes' | 'add-custom-cakes') {
     this.currentSection = section;
     if (section === 'pop-orders') {
       this.loadOrders();
@@ -172,6 +182,74 @@ export class AdminHomeComponent implements OnInit {
       this.addCakeToastVisible = false;
       this.addCakeToastMessage = '';
     }, 2200);
+  }
+
+  // --- Custom Cake Logic ---
+
+  initAddCustomCakeForm() {
+    this.addCustomCakeForm = this.formBuilder.group({
+      cakeId: [100, [Validators.required]], // 100 for Regular, 101 for Photo
+      cakeName: ['', [Validators.required, Validators.maxLength(60)]],
+      cakeCommonSize: ['1 Kg', [Validators.required]],
+      flower: [null], // Optional
+      imageUrl: [null, [Validators.required]], // Compulsory for all types
+    });
+  }
+
+  onCustomCakeImageSelect(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    // Use existing upload logic from cake service or just display preview if only URL is needed
+    // Usually we need to upload it first. For now, let's just preview.
+    const objectUrl = URL.createObjectURL(file);
+    this.customCakeImagePreview = objectUrl;
+
+    // If you need to actually upload:
+    this.cakesService.uploadImage(file, 'assets/CustomCakeImage').subscribe({
+      next: (res) => {
+        this.addCustomCakeForm.patchValue({ imageUrl: res.path }); // Adjust path if needed
+      },
+      error: (err) => console.error('Upload failed', err)
+    });
+  }
+
+  onSubmitAddCustomCake() {
+    if (this.addCustomCakeForm.invalid) {
+      this.addCustomCakeForm.markAllAsTouched();
+      return;
+    }
+
+    this.addCustomCakeLoading = true;
+    this.addCustomCakeError = null;
+    this.addCustomCakeSuccess = null;
+
+    const formValue = this.addCustomCakeForm.value;
+
+    // Send payload directly - imageUrl is now compulsory for both types
+    const payload = { ...formValue };
+
+    this.customCakeService.addCustomCake(payload).subscribe({
+      next: (res) => {
+        this.addCustomCakeLoading = false;
+        this.addCustomCakeSuccess = 'Custom cake added successfully!';
+        this.addCustomCakeForm.reset({
+          cakeId: 100,
+          cakeName: '',
+          cakeCommonSize: '1 Kg',
+          flower: null,
+          imageUrl: null
+        });
+        this.customCakeImagePreview = null;
+        this.showAddCakeToast('Custom Cake added!');
+      },
+      error: (err) => {
+        this.addCustomCakeLoading = false;
+        this.addCustomCakeError = 'Failed to add custom cake.';
+        console.error(err);
+      }
+    });
   }
 
   private sanitizeFileName(name: string): string {

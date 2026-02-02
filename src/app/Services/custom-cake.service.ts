@@ -17,6 +17,10 @@ export class CustomCakeService {
     return this.http.get<CustomCakeData[]>('https://localhost:7196/api/CustomCake');
   }
 
+  addCustomCake(payload: Partial<CustomCakeData>): Observable<CustomCakeData> {
+    return this.http.post<CustomCakeData>('https://localhost:7196/api/CustomCake/AddCakes', payload);
+  }
+
   getCustomCakes(limit: number = 12): Observable<Cake[]> {
     return this.getCustomCakeList().pipe(
       map((items) => {

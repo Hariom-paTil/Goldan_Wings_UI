@@ -38,10 +38,14 @@ export class CakesService {
     return isNaN(num) ? fallback : num;
   }
 
-  uploadImage(file: File): Observable<{ path: string }> {
+  uploadImage(file: File, folder?: string): Observable<{ path: string }> {
     const formData = new FormData();
     formData.append('image', file);
-    return this.http.post<{ path: string }>(this.uploadUrl, formData);
+    let url = this.uploadUrl;
+    if (folder) {
+      url += `?folder=${folder}`;
+    }
+    return this.http.post<{ path: string }>(url, formData);
   }
 
   addCake(payload: { flavor: string; name: string; price: number; imageUrl: string }): Observable<any> {

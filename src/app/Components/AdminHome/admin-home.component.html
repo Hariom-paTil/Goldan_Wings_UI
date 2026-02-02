@@ -6,23 +6,18 @@
 
   <!-- Admin Navigation Tabs -->
   <div class="admin-tabs">
-    <button 
-      class="admin-tab" 
-      [class.active]="currentSection === 'overview'"
-      (click)="setSection('overview')">
+    <button class="admin-tab" [class.active]="currentSection === 'overview'" (click)="setSection('overview')">
       📊 Overview
     </button>
-    <button 
-      class="admin-tab" 
-      [class.active]="currentSection === 'pop-orders'"
-      (click)="setSection('pop-orders')">
+    <button class="admin-tab" [class.active]="currentSection === 'pop-orders'" (click)="setSection('pop-orders')">
       📦 Orders
     </button>
-    <button 
-      class="admin-tab" 
-      [class.active]="currentSection === 'add-cakes'"
-      (click)="setSection('add-cakes')">
+    <button class="admin-tab" [class.active]="currentSection === 'add-cakes'" (click)="setSection('add-cakes')">
       🍰 Add Cakes
+    </button>
+    <button class="admin-tab" [class.active]="currentSection === 'add-custom-cakes'"
+      (click)="setSection('add-custom-cakes')">
+      ✨ Add Custom Cakes
     </button>
   </div>
 
@@ -31,18 +26,24 @@
     <div class="section-container">
       <h2>Welcome to Admin Panel</h2>
       <p>Select a section from the tabs above to manage your cake shop.</p>
-      
+
       <div class="admin-cards">
         <div class="admin-card" (click)="setSection('pop-orders')">
           <div class="card-icon">📦</div>
           <h3>Pop Orders</h3>
           <p>View and manage pending orders from customers.</p>
         </div>
-        
+
         <div class="admin-card" (click)="setSection('add-cakes')">
           <div class="card-icon">🍰</div>
           <h3>Add Cakes</h3>
           <p>Add new cake items to your shop inventory.</p>
+        </div>
+
+        <div class="admin-card" (click)="setSection('add-custom-cakes')">
+          <div class="card-icon">✨</div>
+          <h3>Add Custom Cakes</h3>
+          <p>Configure base cakes for user customization.</p>
         </div>
       </div>
     </div>
@@ -53,7 +54,7 @@
     <div class="section-container">
       <h2>Pending Orders</h2>
       <p class="section-note">Compact view to keep data tidy and readable.</p>
-      
+
       <!-- Loading State -->
       <div class="loading-state" *ngIf="loading">
         <p>⏳ Loading orders...</p>
@@ -168,6 +169,81 @@
               </button>
               <span class="status success" *ngIf="addCakeSuccess">{{ addCakeSuccess }}</span>
               <span class="status error" *ngIf="addCakeError">{{ addCakeError }}</span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Custom Cakes Section -->
+  <div class="admin-home__body" *ngIf="currentSection === 'add-custom-cakes'">
+    <div class="section-container">
+      <h2>Add Custom Cake Base</h2>
+      <p class="section-note">Add base cakes that users can customize (normal or photo cakes).</p>
+
+      <div class="add-cakes-content">
+        <div class="toast" *ngIf="addCakeToastVisible">
+          <span>🎉 {{ addCakeToastMessage }}</span>
+        </div>
+
+        <div class="add-cake-card">
+          <div class="add-cake-card__head">
+            <div>
+              <h3>New Custom Base</h3>
+              <p>Define base properties. Use ID 101 for Image Cakes, 100 for Regular.</p>
+            </div>
+          </div>
+
+          <form class="add-cake-form" [formGroup]="addCustomCakeForm" (ngSubmit)="onSubmitAddCustomCake()">
+            <div class="form-grid">
+              <label class="form-field">
+                <span class="label">Cake Type</span>
+                <select formControlName="cakeId">
+                  <option [ngValue]="100">Normal</option>
+                  <option [ngValue]="101">Image</option>
+                </select>
+                <small class="hint">101 for Image section (Photo Cake), 100 for Normal.</small>
+              </label>
+
+              <label class="form-field">
+                <span class="label">Cake Name</span>
+                <input type="text" placeholder="Vanilla Base" formControlName="cakeName" />
+              </label>
+
+              <label class="form-field">
+                <span class="label">Common Size</span>
+                <input type="text" placeholder="1 Kg" formControlName="cakeCommonSize" />
+              </label>
+
+              <label class="form-field">
+                <span class="label">Flower Decoration</span>
+                <input type="text" placeholder="Rose (Optional)" formControlName="flower" />
+                <small class="hint">Leave empty if none.</small>
+              </label>
+            </div>
+
+            <div class="form-field file-field">
+              <div class="file-row">
+                <div>
+                  <span class="label">Base Image (Required)</span>
+                  <small class="hint">Visual reference for the user. Saved to assets/CustomCakeImage.</small>
+                </div>
+                <input type="file" accept="image/*" (change)="onCustomCakeImageSelect($event)" />
+              </div>
+              <div class="image-preview" *ngIf="customCakeImagePreview || addCustomCakeForm.value.imageUrl">
+                <img *ngIf="customCakeImagePreview" [src]="customCakeImagePreview" alt="Preview" />
+                <div class="image-url" *ngIf="addCustomCakeForm.value.imageUrl">Path: {{
+                  addCustomCakeForm.value.imageUrl }}</div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button class="primary-btn" type="submit" [disabled]="addCustomCakeLoading || addCustomCakeForm.invalid">
+                {{ addCustomCakeLoading ? 'Saving...' : 'Add Custom Base' }}
+              </button>
+              <span class="status success" *ngIf="addCustomCakeSuccess">{{ addCustomCakeSuccess }}</span>
+              <span class="status error" *ngIf="addCustomCakeError">{{ addCustomCakeError }}</span>
             </div>
           </form>
         </div>
