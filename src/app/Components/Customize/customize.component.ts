@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { CartService } from '../../Services/cart.service';
 import { CustomCakeService } from '../../Services/custom-cake.service';
 import { Cake } from '../../Interfaces/cake.interface';
+import { AuthService } from '../../Services/auth.service';
 
 type SizeOption = { label: string; inc: number };
 type FlavorOption = { label: string; inc: number };
@@ -13,7 +14,7 @@ type FlowerOption = { label: string; inc: number };
 @Component({
   selector: 'app-customize',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './customize.component.html',
   styleUrls: ['./customize.component.scss']
 })
@@ -58,7 +59,20 @@ export class CustomizeComponent {
   loadingCustom = true;
   errorCustom: string | null = null;
 
-  constructor(private cart: CartService, private cakesApi: CustomCakeService) { }
+  // Direct Order Form Fields
+  showOrderForm = false;
+  fullName = '';
+  email = '';
+  address = '';
+  emailDisabled = false;
+
+  // Dependencies
+  constructor(
+    private cart: CartService,
+    private cakesApi: CustomCakeService,
+    private http: HttpClient,
+    private auth: AuthService
+  ) { }
 
   ngOnInit() {
     this.loadingCustom = true;
@@ -76,6 +90,14 @@ export class CustomizeComponent {
           ' • check server/CORS.';
       },
     });
+
+    // Auto-fill email if logged in
+    this.auth.user$.subscribe(user => {
+      if (user && user.email) {
+        this.email = user.email;
+        this.emailDisabled = true;
+      }
+    });
   }
 
   openDetail(cake: Cake) {
@@ -86,7 +108,9 @@ export class CustomizeComponent {
     this.note = '';
     this.imageMode = false;
     this.customImageUrl = '';
+    this.selectedFile = null; // Reset file
     this.detailOpen = true;
+    this.showOrderForm = false;
   }
 
   openImageDetail(cake?: Cake) {
@@ -97,11 +121,14 @@ export class CustomizeComponent {
     this.note = '';
     this.imageMode = true;
     this.customImageUrl = '';
+    this.selectedFile = null; // Reset file
     this.detailOpen = true;
+    this.showOrderForm = false;
   }
 
   closeDetail() {
     this.detailOpen = false;
+    this.showOrderForm = false;
   }
 
   get totalPrice(): number {
@@ -115,10 +142,14 @@ export class CustomizeComponent {
     );
   }
 
+  selectedFile: File | null = null;
+  isSubmitting = false;
+
   onFileSelected(e: Event) {
     const input = e.target as HTMLInputElement;
     const file = input.files && input.files[0];
     if (!file) return;
+    this.selectedFile = file;
     const reader = new FileReader();
     reader.onload = () => {
       this.customImageUrl = typeof reader.result === 'string' ? reader.result : '';
@@ -126,17 +157,124 @@ export class CustomizeComponent {
     reader.readAsDataURL(file);
   }
 
-  addToCart() {
+  // NOTE: addToCart removed as per requirement
+
+  showDirectOrderForm() {
     if (!this.selectedCake) return;
-    const customized: Cake = {
-      id: Math.floor(Math.random() * 1000000),
-      name: `${this.selectedCake.name} • ${this.selectedSize.label}`,
-      flavor: this.selectedFlavor.label,
-      imageUrl: this.customImageUrl || this.selectedCake.imageUrl,
-      price: this.totalPrice,
+    this.showOrderForm = true;
+  }
+
+  cancelOrderForm() {
+    this.showOrderForm = false;
+  }
+
+  submitDirectOrder() {
+    if (!this.fullName || !this.email || !this.address) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+
+    if (!this.selectedCake) return;
+
+    this.isSubmitting = true;
+
+    // 1. Upload Image (if needed) -> 2. Create User Info -> 3. Create Custom Order
+    const processOrder = (finalImageUrl: string) => {
+
+      // A. Add User Info to get an ID reference
+      // Combine names for the single 'name' field
+      const userPayload = {
+        name: this.fullName.trim(),
+        address: 0,
+        email: this.email
+      };
+
+      this.cakesApi.addUserInfo(userPayload).subscribe({
+        next: (res: any) => {
+          let refId = res;
+          try {
+            // Handle potential JSON or raw string/number response
+            // If it returns { "id": 123 } or similar
+            const json = JSON.parse(res);
+            if (json && (json.id || json.customCakeUserInfoId)) {
+              refId = json.id || json.customCakeUserInfoId;
+            } else if (typeof json === 'string' || typeof json === 'number') {
+              refId = json;
+            }
+          } catch (e) { }
+
+          // Ensure refId is a number
+          const numericId = Number(refId);
+
+          // B. Create Custom Order linked to User Info
+          // Assuming orderID field is still used to link, but now it links to UserInfo
+          const customPayload = {
+            orderID: isNaN(numericId) ? 0 : numericId,
+            customCakeOrder: this.imageMode ? 101 : 100, // Matching your updated note? No, the field is cakeIdentityID
+            cakeIdentityID: this.imageMode ? 101 : 100,
+            cakeName: this.selectedCake!.name,
+            cakeSize: this.selectedSize.label,
+            flowerDecoration: this.selectedFlower.label,
+            notes: `Address: ${this.address}\n\n${this.note}`,
+            imageURL: finalImageUrl // Send the image URL even for normal cakes (it will be the base cake image)
+          };
+
+          this.cakesApi.createCustomOrder(customPayload).subscribe({
+            next: () => {
+              this.isSubmitting = false;
+              alert(`Custom Order Placed Successfully!`);
+              this.closeDetail();
+            },
+            error: (err) => {
+              this.isSubmitting = false;
+              console.error('Custom Order Failed', err);
+
+              let errorMsg = 'User details saved, but failed to save custom cake details.';
+
+              if (err?.error?.errors) {
+                // Extract validation errors
+                const validationErrors = Object.entries(err.error.errors)
+                  .map(([key, msgs]) => `${key}: ${(msgs as any[]).join(', ')}`)
+                  .join('\n');
+                errorMsg += `\n\nValidation Errors:\n${validationErrors}`;
+              } else if (err?.error?.message) {
+                errorMsg += `\n${err.error.message}`;
+              }
+
+              alert(errorMsg);
+            }
+          });
+        },
+        error: (err) => {
+          this.isSubmitting = false;
+          console.error('User Info Save Failed', err);
+
+          let msg = 'Failed to save user details.';
+          if (err instanceof ProgressEvent || err?.status === 0) {
+            msg = 'Cannot connect to server. Check CORS/API.';
+          } else if (err?.error?.message) {
+            msg = err.error.message;
+          } else if (typeof err?.error === 'string') {
+            msg = err.error;
+          }
+          alert(msg);
+        }
+      });
     };
-    this.cart.add(customized);
-    alert('Added customized cake to cart');
-    this.detailOpen = false;
+
+    // Step 0: Upload Image if selected
+    if (this.selectedFile) {
+      this.cakesApi.uploadCustomImage(this.selectedFile).subscribe({
+        next: (res) => {
+          processOrder(res.path);
+        },
+        error: (err) => {
+          this.isSubmitting = false;
+          alert('Failed to upload image. Please try again.');
+        }
+      });
+    } else {
+      processOrder(this.customImageUrl || this.selectedCake.imageUrl);
+    }
   }
 }

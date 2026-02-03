@@ -21,6 +21,28 @@ export class CustomCakeService {
     return this.http.post('https://localhost:7196/api/CustomCake/AddCakes', payload, { responseType: 'text' });
   }
 
+  uploadCustomImage(file: File): Observable<{ path: string }> {
+    const formData = new FormData();
+    formData.append('image', file);
+    // Use the upload-server endpoint with the specific folder
+    return this.http.post<{ path: string }>(
+      'http://localhost:3000/upload?folder=assets/CustomCakeOrdrImg',
+      formData
+    );
+  }
+
+  createCustomOrder(payload: any): Observable<any> {
+    return this.http.post('https://localhost:7196/api/CustomCakeOrder/CustomOrder', payload, {
+      responseType: 'text'
+    });
+  }
+
+  addUserInfo(payload: { name: string; address: number; email: string }): Observable<any> {
+    return this.http.post('https://localhost:7196/api/CustomCakeUserInfo/AddUserInfo', payload, {
+      responseType: 'text' // Expecting an ID back as text/json
+    });
+  }
+
   getCustomCakes(limit: number = 12): Observable<Cake[]> {
     return this.getCustomCakeList().pipe(
       map((items) => {
@@ -67,6 +89,12 @@ export class CustomCakeService {
 
   private normalizeImage(src: string, index: number): string {
     let clean = (src || '').trim();
+
+    // Filter out default Swagger/API placeholder "string"
+    if (!clean || clean.toLowerCase() === 'string') {
+      return `/assets/Img/img-${index}.jpg`;
+    }
+
     clean = clean.replace(/assest/gi, 'assets');
     clean = clean.replace(/\\/g, '/');
 

@@ -4,4 +4,5 @@ export interface Cake {
   flavor?: string;
   imageUrl: string;
   price: number;
+  customData?: any;
 }

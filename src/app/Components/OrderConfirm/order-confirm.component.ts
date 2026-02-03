@@ -5,6 +5,9 @@ import { CartService, CartItem } from '../../Services/cart.service';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../Services/auth.service';
 import { CelebrationComponent } from '../Celebration/celebration.component';
+import { CustomCakeService } from '../../Services/custom-cake.service';
+import { switchMap, map } from 'rxjs/operators';
+import { of, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-order-confirm',
@@ -19,7 +22,6 @@ export class OrderConfirmComponent implements OnInit {
   items: CartItem[] = [];
   total = 0;
 
-  // form fields
   firstName = '';
   lastName = '';
   address = '';
@@ -31,7 +33,12 @@ export class OrderConfirmComponent implements OnInit {
 
   private ordersUrl = 'https://localhost:7196/api/Orders';
 
-  constructor(private cart: CartService, private http: HttpClient, private auth: AuthService) {}
+  constructor(
+    private cart: CartService,
+    private http: HttpClient,
+    private auth: AuthService,
+    private customCakeService: CustomCakeService
+  ) { }
 
   ngOnInit(): void {
     this.cart.items$.subscribe(items => {
@@ -39,7 +46,6 @@ export class OrderConfirmComponent implements OnInit {
       this.total = items.reduce((s, it) => s + (it.cake.price * it.quantity), 0);
     });
 
-    // Prefill email if user is logged in
     this.auth.user$.subscribe(user => {
       if (user && user.email) {
         this.email = user.email;
@@ -72,20 +78,28 @@ export class OrderConfirmComponent implements OnInit {
     console.log('Submitting order:', payload);
 
     this.http.post(this.ordersUrl, payload, {
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       responseType: 'text'
-    }).subscribe({
-      next: (res: any) => {
-        this.submitting = false;
+    }).pipe(
+      switchMap((res: any) => {
         console.log('Order response:', res);
-        
-        // Show celebration effect
+        let orderId = res;
+        try {
+          const json = JSON.parse(res);
+          if (json && json.id) orderId = json.id;
+          else if (typeof json === 'string' || typeof json === 'number') orderId = json;
+        } catch (e) { }
+
+        // Process any custom cake items, using the main orderId
+        return this.processCustomOrders(orderId).pipe(
+          map(() => res) // Pass through original result
+        );
+      })
+    ).subscribe({
+      next: () => {
+        this.submitting = false;
         this.showCelebration = true;
         this.cart.clear();
-        
-        // Close celebration after 5 seconds
         setTimeout(() => {
           this.showCelebration = false;
           this.close.emit();
@@ -94,37 +108,57 @@ export class OrderConfirmComponent implements OnInit {
       error: (err) => {
         this.submitting = false;
         console.error('Order error:', err);
-        
         let msg = 'Failed to place order';
-        
-        // Check for CORS/network errors
+
         if (err instanceof ProgressEvent || err?.status === 0 || err?.type === 'error') {
-          msg = `CORS Error: Cannot connect to ${this.ordersUrl}\n\n` +
-                'Possible solutions:\n' +
-                '1. Ensure your backend server is running at https://localhost:7196\n' +
-                '2. Check that CORS is enabled in your backend\n' +
-                '3. Verify your SSL certificate is trusted\n\n' +
-                'Backend should allow origin: http://localhost:63945';
-        } else if (err?.status === 400 && err.error && err.error.errors) {
-          const errs = err.error.errors;
-          msg = 'Validation errors:\n' + Object.entries(errs)
-            .map(([field, msgs]: [string, any]) => `${field}: ${Array.isArray(msgs) ? msgs.join(', ') : msgs}`)
-            .join('\n');
-        } else if (err?.error) {
-          if (typeof err.error === 'string') {
-            msg = err.error;
-          } else if (err.error.message) {
-            msg = err.error.message;
-          } else if (err.error.title) {
-            msg = err.error.title;
-          }
-        } else if (err?.message) {
-          msg = err.message;
+          msg = `CORS/Network Error: Cannot connect to ${this.ordersUrl}`;
+        } else if (err?.error?.message) {
+          msg = err.error.message;
+        } else if (typeof err?.error === 'string') {
+          msg = err.error;
         }
-        
+
         alert(msg);
       }
     });
+  }
+
+  private processCustomOrders(orderId: any) {
+    const customItems = this.items.filter(it => it.cake.customData?.isCustom);
+
+    if (customItems.length === 0) {
+      return of([]);
+    }
+
+    const tasks = customItems.map(item => {
+      const data = item.cake.customData;
+
+      const submitCustom = (imageUrl: string) => {
+        const customPayload = {
+          orderID: orderId, // Link to main order
+          cakeIdentityID: data.cakeIdentityID,
+          cakeName: data.cakeNameBase,
+          cakeSize: data.size,
+          flowerDecoration: data.flower,
+          notes: data.notes,
+          imageURL: data.cakeIdentityID === 100 ? null : imageUrl
+        };
+        // We log but don't fail the whole order if one custom part fails, 
+        // effectively we try our best.
+        // Actually better to fail? The prompt implies strong integration.
+        return this.customCakeService.createCustomOrder(customPayload);
+      };
+
+      if (data.file) {
+        return this.customCakeService.uploadCustomImage(data.file).pipe(
+          switchMap(res => submitCustom(res.path))
+        );
+      } else {
+        return submitCustom(data.originalImageUrl || '');
+      }
+    });
+
+    return forkJoin(tasks);
   }
 
   closeModal() {

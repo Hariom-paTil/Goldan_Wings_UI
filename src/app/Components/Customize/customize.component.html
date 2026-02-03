@@ -101,8 +101,60 @@
           </label>
 
           <div class="actions">
-            <button class="btn secondary" (click)="closeDetail()">Cancel</button>
-            <button class="btn confirm" (click)="addToCart()">Add to cart</button>
+            <button class="btn secondary" (click)="closeDetail()" [disabled]="isSubmitting">Cancel</button>
+            <button class="btn confirm" (click)="showDirectOrderForm()" [disabled]="isSubmitting">Order Now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="showOrderForm" role="dialog" aria-modal="true">
+  <div class="modal detail">
+    <div class="modal__header">
+      <h3>Complete Custom Order</h3>
+      <button class="close" (click)="cancelOrderForm()">✕</button>
+    </div>
+
+    <div class="modal__content">
+      <div class="detail-grid">
+        <div class="left">
+          <img class="preview" [src]="customImageUrl || selectedCake?.imageUrl" [alt]="selectedCake?.name" />
+          <div class="summary-card">
+            <h4>Order Summary</h4>
+            <p><strong>Cake:</strong> {{ selectedCake?.name }}</p>
+            <p><strong>Size:</strong> {{ selectedSize.label }}</p>
+            <p><strong>Flavor:</strong> {{ selectedFlavor.label }}</p>
+            <p><strong>Flower:</strong> {{ selectedFlower.label }}</p>
+            <div class="total">
+              Amount to Pay: <strong>$ {{ totalPrice.toFixed(2) }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="right">
+          <div class="form-group">
+            <label>Name <span class="req">*</span>
+              <input type="text" [(ngModel)]="fullName" />
+            </label>
+          </div>
+          <div class="form-group">
+            <label>Email <span class="req">*</span>
+              <input type="email" [(ngModel)]="email" [disabled]="emailDisabled" />
+            </label>
+          </div>
+          <div class="form-group">
+            <label>Delivery Address <span class="req">*</span>
+              <textarea [(ngModel)]="address" rows="3"></textarea>
+            </label>
+          </div>
+
+          <div class="actions">
+            <button class="btn secondary" (click)="cancelOrderForm()" [disabled]="isSubmitting">Back</button>
+            <button class="btn confirm" (click)="submitDirectOrder()" [disabled]="isSubmitting">
+              {{ isSubmitting ? 'Placing Order...' : 'Confirm Order' }}
+            </button>
           </div>
         </div>
       </div>
