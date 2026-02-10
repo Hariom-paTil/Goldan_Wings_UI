@@ -13,9 +13,13 @@ import { AuthService } from './Services/auth.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'Goldan_Wings';
 
-  constructor(private auth: AuthService) {}
+  openOrder() {
+    console.log('Order clicked');
+    // Implement scroll or routing logic here if needed
+  }
+
+  constructor(private auth: AuthService) { }
 
   ngOnInit(): void {
     // Restore previous session if present (safe for SSR inside the service)

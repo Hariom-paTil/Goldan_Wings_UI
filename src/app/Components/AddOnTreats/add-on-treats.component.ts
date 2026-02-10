@@ -41,21 +41,21 @@ export class AddOnTreatsComponent implements OnInit, OnDestroy {
 
     // Sample Data
     items: AddOnItem[] = [
-        { id: 1, name: 'Dairy Milk Silk', category: 'Chocolates', price: 180, image: 'assets/treats/silk.jpg', description: 'Smooth and creamy Cadbury Dairy Milk Silk chocolate.', isPopular: true },
-        { id: 2, name: 'Ferrero Rocher (4pcs)', category: 'Chocolates', price: 149, image: 'assets/treats/ferrero.jpg', description: 'Crispy hazelnut and milk chocolate-covered wafer.', isPopular: true },
-        { id: 3, name: 'KitKat Dessert', category: 'Chocolates', price: 60, image: 'assets/treats/kitkat.jpg', description: 'Classic KitKat wafer bar with a rich dessert twist.' },
-        { id: 4, name: 'Birthday Spray', category: 'Decorations', price: 150, image: 'assets/treats/spray.jpg', description: 'Fun snow spray for birthday celebrations.' },
-        { id: 5, name: 'Magic Candles', category: 'Decorations', price: 50, image: 'assets/treats/candles.jpg', description: 'Relighting magic candles that spark joy.', isPopular: true },
-        { id: 6, name: 'Lays Chips (Salted)', category: 'Snacks', price: 20, image: 'assets/treats/chips.jpg', description: 'Classic salted potato chips, perfect for munching.' },
-        { id: 7, name: 'Coca Cola (750ml)', category: 'Soft Drinks', price: 45, image: 'assets/treats/coke.jpg', description: 'Refreshing Coca Cola soft drink.' },
-        { id: 8, name: 'Party Hats (Set of 5)', category: 'Party Wear', price: 120, image: 'assets/treats/hats.jpg', description: 'Colorful cone hats for the birthday squad.' },
-        { id: 9, name: 'Cake Knife', category: 'Extras', price: 30, image: 'assets/treats/knife.jpg', description: 'Premium plastic cake cutting knife.' },
-        { id: 10, name: 'Greeting Card', category: 'Extras', price: 50, image: 'assets/treats/card.jpg', description: 'Beautiful greeting card with blank space for your message.' }
+        { id: 1, name: 'Dairy Milk Silk', category: 'Chocolates', price: 180, image: 'assets/header_img.jpg', description: 'Smooth and creamy Cadbury Dairy Milk Silk chocolate.', isPopular: true },
+        { id: 2, name: 'Ferrero Rocher (4pcs)', category: 'Chocolates', price: 149, image: 'assets/header_img.jpg', description: 'Crispy hazelnut and milk chocolate-covered wafer.', isPopular: true },
+        { id: 3, name: 'KitKat Dessert', category: 'Chocolates', price: 60, image: 'assets/header_img.jpg', description: 'Classic KitKat wafer bar with a rich dessert twist.' },
+        { id: 4, name: 'Birthday Spray', category: 'Decorations', price: 150, image: 'assets/header_img.jpg', description: 'Fun snow spray for birthday celebrations.' },
+        { id: 5, name: 'Magic Candles', category: 'Decorations', price: 50, image: 'assets/header_img.jpg', description: 'Relighting magic candles that spark joy.', isPopular: true },
+        { id: 6, name: 'Lays Chips (Salted)', category: 'Snacks', price: 20, image: 'assets/header_img.jpg', description: 'Classic salted potato chips, perfect for munching.' },
+        { id: 7, name: 'Coca Cola (750ml)', category: 'Soft Drinks', price: 45, image: 'assets/header_img.jpg', description: 'Refreshing Coca Cola soft drink.' },
+        { id: 8, name: 'Party Hats (Set of 5)', category: 'Party Wear', price: 120, image: 'assets/header_img.jpg', description: 'Colorful cone hats for the birthday squad.' },
+        { id: 9, name: 'Cake Knife', category: 'Extras', price: 30, image: 'assets/header_img.jpg', description: 'Premium plastic cake cutting knife.' },
+        { id: 10, name: 'Greeting Card', category: 'Extras', price: 50, image: 'assets/header_img.jpg', description: 'Beautiful greeting card with blank space for your message.' }
     ];
 
     combos: ComboItem[] = [
-        { id: 101, name: 'Sweet Celebration', items: ['Cake (Selected)', 'Dairy Milk Silk', 'Snow Spray'], originalPrice: 830, discountPrice: 750, image: 'assets/treats/combo1.jpg', saveAmount: 80 },
-        { id: 102, name: 'Party Starter', items: ['Cake (Selected)', 'Coca Cola', 'Lays Chips'], originalPrice: 600, discountPrice: 550, image: 'assets/treats/combo2.jpg', saveAmount: 50 }
+        { id: 101, name: 'Sweet Celebration', items: ['Cake (Selected)', 'Dairy Milk Silk', 'Snow Spray'], originalPrice: 830, discountPrice: 750, image: 'assets/header_img.jpg', saveAmount: 80 },
+        { id: 102, name: 'Party Starter', items: ['Cake (Selected)', 'Coca Cola', 'Lays Chips'], originalPrice: 600, discountPrice: 550, image: 'assets/header_img.jpg', saveAmount: 50 }
     ];
 
     filteredItems: AddOnItem[] = [];

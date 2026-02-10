@@ -1,21 +1,20 @@
 <div class="app-shell">
   <app-header></app-header>
   <main class="page-body">
-    <div class="hero-image">
-      <img src="/assets/realheader.png" alt="Cake showcase" />
-      <div class="hero-overlay">
-        <div class="hero-actions">
-          <button class="btn btn-primary">Read More</button>
-          <button class="btn btn-ghost">
-            <span class="play-icon" aria-hidden="true">►</span>
-            Play Video
-          </button>
+    <section class="hero-section">
+      <div class="content-wrapper">
+        <div class="text-content">
+          <h1>Experience the Taste of <br><span class="highlight">Golden Wings</span></h1>
+          <p>Handcrafted cakes, baked with love and premium ingredients. Perfect for every celebration.</p>
+          <div class="cta-buttons">
+            <button class="btn-primary" (click)="openOrder()">Order Now</button>
+            <button class="btn-secondary">View Menu</button>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
     <router-outlet />
   </main>
 
   <app-footer></app-footer>
 </div>
-
