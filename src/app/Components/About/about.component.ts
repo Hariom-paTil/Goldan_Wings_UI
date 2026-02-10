@@ -16,7 +16,7 @@ export class AboutComponent implements OnInit {
   isOrderActive = false;
   isAdminModalActive = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
     this.updateRouteState(this.router.url);
@@ -36,7 +36,7 @@ export class AboutComponent implements OnInit {
   }
 
   private updateRouteState(url: string): void {
-    this.isOrderActive = url.includes('/about/order');
+    this.isOrderActive = url.includes('/about/order') || url.includes('/about/add-ons');
     this.isAdminModalActive = url.includes('/about/G_W_AdminPanel');
   }
 }

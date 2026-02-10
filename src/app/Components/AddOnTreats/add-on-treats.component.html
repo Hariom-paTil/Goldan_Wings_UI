@@ -1,0 +1,128 @@
+
+<div class="treats-container">
+  
+  <!-- Header Section -->
+  <header class="treats-header anim-slide-up">
+    <h1>Make it Special ✨</h1>
+    <p>Complete your celebration with these premium add-ons</p>
+  </header>
+
+  <!-- Categories -->
+  <div class="categories-scroll anim-slide-up" style="animation-delay: 100ms;">
+    <button 
+      *ngFor="let cat of categories" 
+      class="category-pill" 
+      [class.active]="selectedCategory === cat"
+      (click)="setCategory(cat)">
+      {{ cat }}
+    </button>
+  </div>
+
+  <!-- Combos Section -->
+  <section class="combos-section anim-slide-up" style="animation-delay: 200ms;" *ngIf="categories.includes('All') && selectedCategory === 'All'">
+    <h2 class="section-title">🎉 Perfect Party Combos</h2>
+    <div class="combos-grid">
+      <div class="combo-card" *ngFor="let combo of combos" (click)="openModal(combo)">
+        <div class="combo-image-wrapper">
+          <img [src]="combo.image" [alt]="combo.name" class="combo-img">
+          <span class="save-badge">Save ₹{{ combo.saveAmount }}</span>
+        </div>
+        <div class="combo-details">
+          <h3>{{ combo.name }}</h3>
+          <p class="combo-items">{{ combo.items.join(' + ') }}</p>
+          <div class="price-row">
+            <span class="discount-price">₹{{ combo.discountPrice }}</span>
+            <span class="original-price">₹{{ combo.originalPrice }}</span>
+          </div>
+          <button class="btn-add-combo" (click)="$event.stopPropagation(); addToCart(combo.id)">
+            Add Combo
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products Grid -->
+  <section class="products-section anim-slide-up" style="animation-delay: 300ms;">
+    <h2 class="section-title" *ngIf="selectedCategory !== 'All'">{{ selectedCategory }}</h2>
+    <h2 class="section-title" *ngIf="selectedCategory === 'All'">✨ Featured Treats</h2>
+    
+    <div class="products-grid">
+      <div class="product-card" *ngFor="let item of filteredItems" (click)="openModal(item)">
+        <div class="card-image-content">
+          <img [src]="item.image" [alt]="item.name">
+          <span *ngIf="item.isPopular" class="popular-tag">🔥 Trending</span>
+        </div>
+        
+        <div class="card-info">
+          <div class="card-header">
+            <h3>{{ item.name }}</h3>
+            <span class="price">₹{{ item.price }}</span>
+          </div>
+          
+          <div class="card-actions">
+            <!-- Quantity Selector if in cart -->
+            <div class="qty-selector-mini" *ngIf="getQuantity(item.id) > 0" (click)="$event.stopPropagation()">
+              <button (click)="addToCart(item.id, -1)">−</button>
+              <span>{{ getQuantity(item.id) }}</span>
+              <button (click)="addToCart(item.id, 1)">+</button>
+            </div>
+
+            <!-- Add Button if not in cart -->
+            <button 
+              *ngIf="getQuantity(item.id) === 0" 
+              class="btn-add" 
+              (click)="$event.stopPropagation(); addToCart(item.id)">
+              Add +
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Premium Detail Modal -->
+<div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()">
+  <div class="modal-content anim-pop-in" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="closeModal()">×</button>
+    
+    <div class="modal-grid" *ngIf="selectedItem">
+      <div class="modal-image-col">
+        <img [src]="selectedItem.image" [alt]="selectedItem.name">
+      </div>
+      
+      <div class="modal-details-col">
+        <span class="modal-category" *ngIf="!isCombo(selectedItem)">{{ selectedItem.category }}</span>
+        <span class="modal-category" *ngIf="isCombo(selectedItem)">Value Combo</span>
+        
+        <h2>{{ selectedItem.name }}</h2>
+        
+        <p class="description" *ngIf="!isCombo(selectedItem)">{{ selectedItem.description }}</p>
+        <p class="description" *ngIf="isCombo(selectedItem)">
+          Includes: <span *ngFor="let i of selectedItem.items; let last = last">{{ i }}<span *ngIf="!last"> + </span></span>
+        </p>
+
+        <div class="modal-price-area">
+          <div class="price-stack">
+             <span class="current-price" *ngIf="!isCombo(selectedItem)">₹{{ selectedItem.price }}</span>
+             <span class="current-price" *ngIf="isCombo(selectedItem)">₹{{ selectedItem.discountPrice }}</span>
+             
+             <span class="old-price" *ngIf="isCombo(selectedItem)">₹{{ selectedItem.originalPrice }}</span>
+          </div>
+          
+          <div class="modal-qty-control">
+            <button class="qty-btn" (click)="updateModalQuantity(-1)" [disabled]="modalQuantity <= 1">−</button>
+            <span class="qty-display">{{ modalQuantity }}</span>
+            <button class="qty-btn" (click)="updateModalQuantity(1)">+</button>
+          </div>
+        </div>
+
+        <button class="btn-primary-large" (click)="confirmModalSelection()">
+          Update Order — ₹{{ (isCombo(selectedItem) ? selectedItem.discountPrice : selectedItem.price) * modalQuantity }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

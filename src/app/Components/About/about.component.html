@@ -1,5 +1,5 @@
 <section class="about">
-  <div class="about__header">
+  <div class="about__header" *ngIf="!isOrderActive">
     <p class="eyebrow">About Us</p>
     <h2>Welcome to Goldan_Wings</h2>
     <div class="divider"></div>
@@ -41,23 +41,9 @@
 
 <!-- Child routes for About (e.g., /about/order) render here -->
 <ng-container *ngIf="isAdminModalActive; else standardChild">
-  <div
-    class="admin-modal-backdrop"
-    (click)="closeAdminModal()"
-    aria-label="Close admin login modal"
-  ></div>
-  <div
-    class="admin-modal-shell"
-    role="dialog"
-    aria-modal="true"
-    aria-label="Admin login"
-  >
-    <button
-      type="button"
-      class="admin-modal-close"
-      aria-label="Close admin login"
-      (click)="closeAdminModal()"
-    >
+  <div class="admin-modal-backdrop" (click)="closeAdminModal()" aria-label="Close admin login modal"></div>
+  <div class="admin-modal-shell" role="dialog" aria-modal="true" aria-label="Admin login">
+    <button type="button" class="admin-modal-close" aria-label="Close admin login" (click)="closeAdminModal()">
       X
     </button>
     <router-outlet></router-outlet>
@@ -70,4 +56,3 @@
 
 <!-- Top choices component shows 10 cakes fetched from API -->
 <app-top-choice *ngIf="!isOrderActive"></app-top-choice>
-
