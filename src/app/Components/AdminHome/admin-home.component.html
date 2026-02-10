@@ -19,6 +19,9 @@
       (click)="setSection('add-custom-cakes')">
       ✨ Add Custom Cakes
     </button>
+    <button class="admin-tab" [class.active]="currentSection === 'add-treats'" (click)="setSection('add-treats')">
+      🍬 Add Treats
+    </button>
   </div>
 
   <!-- Overview Section -->
@@ -44,6 +47,12 @@
           <div class="card-icon">✨</div>
           <h3>Add Custom Cakes</h3>
           <p>Configure base cakes for user customization.</p>
+        </div>
+
+        <div class="admin-card" (click)="setSection('add-treats')">
+          <div class="card-icon">🍬</div>
+          <h3>Add Treats</h3>
+          <p>Add add-on items like chocolates and decorations.</p>
         </div>
       </div>
     </div>
@@ -250,4 +259,81 @@
       </div>
     </div>
   </div>
+
+  <!-- Add Treats Section -->
+  <div class="admin-home__body" *ngIf="currentSection === 'add-treats'">
+    <div class="section-container">
+      <h2>Add New Treat</h2>
+      <p class="section-note">Add chocolates, snacks, and party items.</p>
+
+      <div class="add-cakes-content">
+        <div class="toast" *ngIf="addCakeToastVisible">
+          <span>🎉 {{ addCakeToastMessage }}</span>
+        </div>
+
+        <div class="add-cake-card">
+          <form class="add-cake-form" [formGroup]="addTreatForm" (ngSubmit)="onSubmitAddTreat()">
+            <div class="form-grid">
+
+              <label class="form-field">
+                <span class="label">Item Name</span>
+                <input type="text" placeholder="Dairy Milk" formControlName="name" />
+              </label>
+
+              <label class="form-field">
+                <span class="label">Category</span>
+                <select formControlName="category">
+                  <option value="Chocolates">Chocolates</option>
+                  <option value="Decorations">Decorations</option>
+                  <option value="Snacks">Snacks</option>
+                  <option value="Soft Drinks">Soft Drinks</option>
+                  <option value="Party Wear">Party Wear</option>
+                  <option value="Extras">Extras</option>
+                </select>
+              </label>
+
+              <label class="form-field">
+                <span class="label">Price (₹)</span>
+                <input type="number" placeholder="100" formControlName="price" />
+              </label>
+
+              <label class="form-field" style="grid-column: span 2;">
+                <span class="label">Description</span>
+                <textarea placeholder="Describe the item..." formControlName="description"></textarea>
+              </label>
+
+              <label class="form-field checkbox-field">
+                <input type="checkbox" formControlName="isPopular" />
+                <span class="label">Mark as Trending/Popular</span>
+              </label>
+            </div>
+
+            <div class="form-field file-field">
+              <div class="file-row">
+                <div>
+                  <span class="label">Item Image</span>
+                  <small class="hint">Only JPG/PNG. Saved to assets/TreatSectionImg.</small>
+                </div>
+                <!-- Reuse the upload mechanism -->
+                <input type="file" accept="image/*" (change)="onTreatImageSelect($event)" />
+              </div>
+              <div class="image-preview" *ngIf="treatImagePreview || addTreatForm.value.imageUrl">
+                <img *ngIf="treatImagePreview" [src]="treatImagePreview" alt="Preview">
+                <div class="image-url" *ngIf="addTreatForm.value.imageUrl">Path: {{ addTreatForm.value.imageUrl }}</div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button class="primary-btn" type="submit" [disabled]="addTreatLoading || addTreatForm.invalid">
+                {{ addTreatLoading ? 'Adding...' : 'Add Treat' }}
+              </button>
+              <span class="status success" *ngIf="addTreatSuccess">{{ addTreatSuccess }}</span>
+              <span class="status error" *ngIf="addTreatError">{{ addTreatError }}</span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>

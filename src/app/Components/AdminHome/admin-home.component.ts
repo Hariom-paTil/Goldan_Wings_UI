@@ -6,6 +6,7 @@ import { AdminSessionService } from '../../Services/admin-session.service';
 import { OrdersService, Order } from '../../Services/orders.service';
 import { CakesService } from '../../Services/cakes.service';
 import { CustomCakeService } from '../../Services/custom-cake.service';
+import { TreatsService } from '../../Services/treats.service';
 
 @Component({
   selector: 'app-admin-home',
@@ -15,7 +16,7 @@ import { CustomCakeService } from '../../Services/custom-cake.service';
   styleUrls: ['./admin-home.component.scss'],
 })
 export class AdminHomeComponent implements OnInit {
-  currentSection: 'overview' | 'pop-orders' | 'add-cakes' | 'add-custom-cakes' = 'overview';
+  currentSection: 'overview' | 'pop-orders' | 'add-cakes' | 'add-custom-cakes' | 'add-treats' = 'overview';
   orders: Order[] = [];
   loading = false;
   error: string | null = null;
@@ -37,12 +38,21 @@ export class AdminHomeComponent implements OnInit {
   addCustomCakeSuccess: string | null = null;
   customCakeImagePreview: string | null = null;
 
+  // Add Treats
+  addTreatForm!: FormGroup;
+  addTreatLoading = false;
+  addTreatError: string | null = null;
+  addTreatSuccess: string | null = null;
+  treatImagePreview: string | null = null;
+  selectedTreatFile: File | null = null;
+
   constructor(
     private router: Router,
     private adminSession: AdminSessionService,
     private ordersService: OrdersService,
     private cakesService: CakesService,
     private customCakeService: CustomCakeService,
+    private treatsService: TreatsService,
     private formBuilder: FormBuilder
   ) { }
 
@@ -57,10 +67,12 @@ export class AdminHomeComponent implements OnInit {
     }
 
     this.initAddCakeForm();
+    this.initAddCakeForm();
     this.initAddCustomCakeForm();
+    this.initAddTreatForm();
   }
 
-  setSection(section: 'overview' | 'pop-orders' | 'add-cakes' | 'add-custom-cakes') {
+  setSection(section: 'overview' | 'pop-orders' | 'add-cakes' | 'add-custom-cakes' | 'add-treats') {
     this.currentSection = section;
     if (section === 'pop-orders') {
       this.loadOrders();
@@ -254,6 +266,89 @@ export class AdminHomeComponent implements OnInit {
         console.error(err);
       }
     });
+  }
+
+  // --- Add Treat Logic ---
+
+  initAddTreatForm() {
+    this.addTreatForm = this.formBuilder.group({
+      name: ['', [Validators.required, Validators.maxLength(60)]],
+      category: ['Chocolates', [Validators.required]],
+      price: [null, [Validators.required, Validators.min(1)]],
+      description: ['', [Validators.required]],
+      imageUrl: ['', [Validators.required]],
+      isPopular: [false]
+    });
+  }
+
+  onTreatImageSelect(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    this.selectedTreatFile = file;
+    const objectUrl = URL.createObjectURL(file);
+    this.treatImagePreview = objectUrl;
+
+    // Upload immediately or wait for submit? Consistent with others -> separate upload or on submit.
+    // Let's reuse cakesService upload for now since it points to the upload server.
+    // folder: 'assets/TreatSectionImg'
+
+    this.cakesService.uploadImage(file, 'assets/TreatSectionImg').subscribe({
+      next: (res) => {
+        this.addTreatForm.patchValue({ imageUrl: res.path });
+      },
+      error: (err) => {
+        console.error('Treat image upload failed', err);
+        this.addTreatError = 'Failed to upload image.';
+      }
+    });
+  }
+
+  onSubmitAddTreat() {
+    if (this.addTreatForm.invalid) {
+      this.addTreatForm.markAllAsTouched();
+      return;
+    }
+
+    this.addTreatLoading = true;
+    this.addTreatError = null;
+    this.addTreatSuccess = null;
+
+    const { name, category, price, description, imageUrl, isPopular } = this.addTreatForm.value;
+
+    const payload = {
+      name,
+      category,
+      price,
+      description,
+      imageUrl,
+      isPopular: !!isPopular,
+      createdAt: new Date().toISOString()
+    };
+
+    this.treatsService.addTreat(payload).subscribe({
+      next: () => {
+        this.addTreatLoading = false;
+        this.addTreatSuccess = 'Treat item added successfully!';
+        this.showAddCakeToast('Treat added!');
+        this.resetAddTreatForm();
+      },
+      error: (err) => {
+        console.error(err);
+        this.addTreatLoading = false;
+        this.addTreatError = 'Failed to add treat.';
+      }
+    });
+  }
+
+  resetAddTreatForm() {
+    this.addTreatForm.reset({
+      category: 'Chocolates',
+      isPopular: false
+    });
+    this.treatImagePreview = null;
+    this.selectedTreatFile = null;
   }
 
   private sanitizeFileName(name: string): string {
