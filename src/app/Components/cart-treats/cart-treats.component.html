@@ -1,0 +1,18 @@
+<div class="treats-section">
+    <h4 class="section-title" *ngIf="treats.length > 0">Add-on Treats</h4>
+    <div *ngFor="let item of treats" class="cart-row">
+        <img class="thumb" [src]="item.cake.imageUrl" [alt]="item.cake.name" />
+        <div class="meta">
+            <h4>{{ item.cake.name }}</h4>
+            <p class="price">$ {{ item.cake.price }}</p>
+        </div>
+        <div class="qty">
+            <button class="qty-btn" (click)="dec(item)">-</button>
+            <span class="qty-val">{{ item.quantity }}</span>
+            <button class="qty-btn" (click)="inc(item)">+</button>
+        </div>
+        <div class="row-actions">
+            <button class="remove" (click)="remove(item)">Remove</button>
+        </div>
+    </div>
+</div>

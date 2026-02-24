@@ -1,0 +1,90 @@
+.treats-section {
+    margin-top: 15px;
+}
+
+.section-title {
+    margin: 15px 0 10px;
+    font-size: 1.1rem;
+    color: #333;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 5px;
+}
+
+.cart-row {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    .thumb {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-right: 15px;
+    }
+
+    .meta {
+        flex: 1;
+
+        h4 {
+            margin: 0 0 5px;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .price {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+    }
+
+    .qty {
+        display: flex;
+        align-items: center;
+        margin-right: 15px;
+
+        .qty-btn {
+            width: 25px;
+            height: 25px;
+            border: 1px solid #ccc;
+            background: #f9f9f9;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &:hover {
+                background: #eee;
+            }
+        }
+
+        .qty-val {
+            width: 30px;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+    }
+
+    .row-actions {
+        .remove {
+            background: none;
+            border: none;
+            color: #ff4d4f;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 5px;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
