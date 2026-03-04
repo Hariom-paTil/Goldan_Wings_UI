@@ -4,20 +4,18 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Treat {
-    name: string;
+    itemName: string;
     category: string;
     price: number;
-    imageUrl: string;
     description: string;
-    isPopular: boolean;
-    createdAt?: string;
+    itemImgUrl: string;
 }
 
 @Injectable({
     providedIn: 'root'
 })
 export class TreatsService {
-    private apiUrl = 'https://localhost:7196/api/AddOnItems/AddOnItems';
+    private apiUrl = 'https://localhost:7196/api/Treats';
 
     constructor(private http: HttpClient) { }
 

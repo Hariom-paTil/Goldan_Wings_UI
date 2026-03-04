@@ -318,13 +318,11 @@ export class AdminHomeComponent implements OnInit {
     const { name, category, price, description, imageUrl, isPopular } = this.addTreatForm.value;
 
     const payload = {
-      name,
-      category,
-      price,
-      description,
-      imageUrl,
-      isPopular: !!isPopular,
-      createdAt: new Date().toISOString()
+      itemName: name,
+      category: category,
+      price: Number(price),
+      description: description,
+      itemImgUrl: imageUrl
     };
 
     this.treatsService.addTreat(payload).subscribe({
