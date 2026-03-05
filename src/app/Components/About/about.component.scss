@@ -162,15 +162,17 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: min(960px, 92vw);
-  max-height: 92vh;
+  width: 95%;
+  max-width: 1400px;
+  max-height: 90vh;
   overflow-y: auto;
+  overflow-x: hidden;
   background: #ffffff;
   border-radius: 18px;
-  padding: 18px 18px 10px;
-  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.28);
+  padding: 1.5rem;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
   z-index: 1001;
-  border: 2px solid rgba(240, 134, 50, 0.35);
+  border: 1px solid rgba(240, 134, 50, 0.35);
 }
 
 .admin-modal-close {
