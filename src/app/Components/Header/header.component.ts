@@ -113,5 +113,50 @@ export class HeaderComponent implements OnInit {
   navigateToAddCakes() {
     this.router.navigate(['/about/G_W_AdminPanel/home/add-cakes']);
   }
+
+  scrollToAbout(event: Event) {
+    event.preventDefault();
+    this.router.navigate(['/about']).then(() => {
+      // Allow DOM to render before attempting to scroll to the anchor smoothly
+      setTimeout(() => {
+        const el = document.getElementById('about-section');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 50);
+    });
+  }
+
+  scrollToTreats(event: Event) {
+    event.preventDefault();
+    this.router.navigate(['/about/add-ons']).then(() => {
+      // Allow DOM to render before attempting to scroll to the anchor smoothly
+      setTimeout(() => {
+        const el = document.getElementById('treats-section');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 50);
+    });
+  }
+
+  scrollToContacts(event: Event) {
+    event.preventDefault();
+    const el = document.getElementById('contacts-section');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      // If footer is not rendered or we are on an entirely different full page,
+      // fallback to navigating home and then scrolling.
+      this.router.navigate(['/']).then(() => {
+        setTimeout(() => {
+          const fallbackEl = document.getElementById('contacts-section');
+          if (fallbackEl) {
+            fallbackEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 50);
+      });
+    }
+  }
 }
 

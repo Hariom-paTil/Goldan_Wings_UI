@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './Components/Header/header.component';
@@ -16,6 +16,8 @@ import { filter } from 'rxjs/operators';
 export class AppComponent implements OnInit {
   title = 'Goldan_Wings';
   showHero = true;
+
+  @ViewChild(HeaderComponent) header!: HeaderComponent;
 
   constructor(private auth: AuthService, private router: Router) { }
 
@@ -44,6 +46,15 @@ export class AppComponent implements OnInit {
 
   openOrder() {
     console.log('Order clicked');
-    // Implement scroll or routing logic here if needed
+    if (this.header) {
+      this.header.openCart();
+    }
+  }
+
+  viewCakes() {
+    console.log('View Cakes clicked');
+    if (this.header) {
+      this.header.openOrder();
+    }
   }
 }

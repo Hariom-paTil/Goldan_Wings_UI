@@ -9,10 +9,10 @@
 
   <ng-container *ngIf="!isAdminLoggedIn">
     <nav class="nav">
-      <a routerLink="/" routerLinkActive="nav__link--active" class="nav__link">Home</a>
-      <a routerLink="/about" routerLinkActive="nav__link--active" class="nav__link">About</a>
-      <a routerLink="/contacts" routerLinkActive="nav__link--active" class="nav__link">Contacts</a>
-      <a routerLink="/about/add-ons" routerLinkActive="nav__link--active" class="nav__link">Treats</a>
+      <a routerLink="/" class="nav__link">Home</a>
+      <a href="/about" class="nav__link" (click)="scrollToAbout($event)">About</a>
+      <a href="#contacts" class="nav__link" (click)="scrollToContacts($event)">Contacts</a>
+      <a href="/about/add-ons" class="nav__link" (click)="scrollToTreats($event)">Treats</a>
       <button class="nav__link nav__link--button" (click)="openOrder()">Cakes</button>
       <button class="nav__link nav__link--button" (click)="openCustomize()">Customize</button>
     </nav>
