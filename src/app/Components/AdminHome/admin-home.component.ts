@@ -16,7 +16,7 @@ import { TreatsService } from '../../Services/treats.service';
   styleUrls: ['./admin-home.component.scss'],
 })
 export class AdminHomeComponent implements OnInit {
-  currentSection: 'overview' | 'pop-orders' | 'add-cakes' | 'add-custom-cakes' | 'add-treats' = 'overview';
+  currentSection: 'overview' | 'pop-orders' | 'custom-cake-orders' | 'add-cakes' | 'add-custom-cakes' | 'add-treats' = 'overview';
   orders: Order[] = [];
   loading = false;
   error: string | null = null;
@@ -30,6 +30,11 @@ export class AdminHomeComponent implements OnInit {
   addCakeToastVisible = false;
   addCakeToastMessage = '';
   private addCakeToastTimer: any;
+
+  // Custom Cake Orders
+  customCakeOrders: any[] = [];
+  customCakeOrdersLoading = false;
+  customCakeOrdersError: string | null = null;
 
   // Custom CAke
   addCustomCakeForm!: FormGroup;
@@ -72,10 +77,12 @@ export class AdminHomeComponent implements OnInit {
     this.initAddTreatForm();
   }
 
-  setSection(section: 'overview' | 'pop-orders' | 'add-cakes' | 'add-custom-cakes' | 'add-treats') {
+  setSection(section: 'overview' | 'pop-orders' | 'custom-cake-orders' | 'add-cakes' | 'add-custom-cakes' | 'add-treats') {
     this.currentSection = section;
     if (section === 'pop-orders') {
       this.loadOrders();
+    } else if (section === 'custom-cake-orders') {
+      this.loadCustomCakeOrders();
     }
   }
 
@@ -91,6 +98,22 @@ export class AdminHomeComponent implements OnInit {
         console.error('Error loading orders:', err);
         this.error = 'Failed to load orders. Please try again.';
         this.loading = false;
+      }
+    });
+  }
+
+  loadCustomCakeOrders() {
+    this.customCakeOrdersLoading = true;
+    this.customCakeOrdersError = null;
+    this.customCakeService.getCustomCakeOrders().subscribe({
+      next: (data: any[]) => {
+        this.customCakeOrders = data;
+        this.customCakeOrdersLoading = false;
+      },
+      error: (err: any) => {
+        console.error('Error loading custom cake orders:', err);
+        this.customCakeOrdersError = 'Failed to load custom cake orders.';
+        this.customCakeOrdersLoading = false;
       }
     });
   }

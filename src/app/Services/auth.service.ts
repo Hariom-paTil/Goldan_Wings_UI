@@ -15,21 +15,21 @@ export class AuthService {
   private _user$ = new BehaviorSubject<User | null>(null);
   readonly user$ = this._user$.asObservable();
 
- 
+
   // Backend login endpoint (updated)
-  private baseUrl = 'http://localhost:5003/api/Login/register';
+  private registerUrl = 'https://localhost:7196/api/Login/Signup';
+  private loginUrl = 'https://localhost:7196/api/Login/Login';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-
-  login(email: string, password: string): Observable<string> {
+  registerUser(email: string, password: string): Observable<string> {
     // API expects PasswordHash matching backend UserLoginInfo.PasswordHash
     const payload = {
       Email: email,
       PasswordHash: password,
     };
 
-    return this.http.post<any>(this.baseUrl, payload).pipe(
+    return this.http.post<any>(this.registerUrl, payload).pipe(
       map(resp => this.normalizeResponse(resp)),
       tap((resp: any) => {
         // Always treat as success from API perspective
@@ -44,15 +44,15 @@ export class AuthService {
               window.localStorage.setItem('auth_token', resp.token);
             }
           }
-        } catch {}
+        } catch { }
       }),
       map((resp: any) => this.extractSuccessMessage(resp)),
       catchError(err => {
         // Check if the error response actually contains a success message
         const normalizedError = this.normalizeResponse(err?.error);
-        const hasSuccessText = this.containsSuccess(normalizedError?.text) || 
-                               this.containsSuccess(normalizedError?.message);
-        
+        const hasSuccessText = this.containsSuccess(normalizedError?.text) ||
+          this.containsSuccess(normalizedError?.message);
+
         if (hasSuccessText) {
           // Backend returned success message with error status code
           // Treat it as success - store user and return success message
@@ -63,7 +63,7 @@ export class AuthService {
             if (typeof window !== 'undefined' && 'localStorage' in window) {
               window.localStorage.setItem('auth_user', JSON.stringify(user));
             }
-          } catch {}
+          } catch { }
           return throwError(() => ({ isActuallySuccess: true, message: this.extractSuccessMessage(normalizedError) }));
         }
 
@@ -87,6 +87,62 @@ export class AuthService {
     );
   }
 
+  loginUser(email: string, password: string): Observable<string> {
+    const payload = {
+      Email: email,
+      PasswordHash: password,
+    };
+
+    return this.http.post<any>(this.loginUrl, payload).pipe(
+      map(resp => this.normalizeResponse(resp)),
+      tap((resp: any) => {
+        // Store the user and token
+        const serverUser = typeof resp === 'object' && resp !== null ? resp.user : null;
+        const user: User = serverUser ?? { email };
+        this._user$.next(user);
+        try {
+          if (typeof window !== 'undefined' && 'localStorage' in window) {
+            window.localStorage.setItem('auth_user', JSON.stringify(user));
+            if (resp?.token) {
+              window.localStorage.setItem('auth_token', resp.token);
+            }
+          }
+        } catch { }
+      }),
+      map((resp: any) => this.extractSuccessMessage(resp)),
+      catchError(err => {
+        // Check if the error response actually contains a success message
+        const normalizedError = this.normalizeResponse(err?.error);
+        const hasSuccessText = this.containsSuccess(normalizedError?.text) ||
+          this.containsSuccess(normalizedError?.message);
+
+        if (hasSuccessText) {
+          // Backend returned success message with error status code
+          // Treat it as success - store user and return success message
+          const user: User = { email };
+          this._user$.next(user);
+          try {
+            if (typeof window !== 'undefined' && 'localStorage' in window) {
+              window.localStorage.setItem('auth_user', JSON.stringify(user));
+            }
+          } catch { }
+          return throwError(() => ({ isActuallySuccess: true, message: this.extractSuccessMessage(normalizedError) }));
+        }
+
+        let message = 'Login failed';
+        if (err instanceof ProgressEvent || err?.type === 'error' || err?.status === 0) {
+          message = 'Network error or CORS blocked — check server, browser console, and CORS settings.';
+        } else if (err?.error) {
+          const normalized = this.normalizeResponse(err.error);
+          message = this.extractSuccessMessage(normalized) || 'Login failed. Please try again.';
+        } else if (err?.message) {
+          message = err.message;
+        }
+        return throwError(() => new Error(message));
+      })
+    );
+  }
+
   logout() {
     const storage = (typeof window !== 'undefined' && 'localStorage' in window) ? window.localStorage : null;
     if (storage) {
@@ -96,7 +152,7 @@ export class AuthService {
     this._user$.next(null);
   }
 
-  
+
   restore(): void {
     try {
       const storage = (typeof window !== 'undefined' && 'localStorage' in window) ? window.localStorage : null;
@@ -106,7 +162,7 @@ export class AuthService {
           try {
             const user = JSON.parse(saved) as User;
             this._user$.next(user);
-          } catch {}
+          } catch { }
         }
       }
     } catch (e) {

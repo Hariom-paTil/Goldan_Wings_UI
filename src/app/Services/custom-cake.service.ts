@@ -21,6 +21,10 @@ export class CustomCakeService {
     return this.http.post('https://localhost:7196/api/CustomCake/AddCakes', payload, { responseType: 'text' });
   }
 
+  getCustomCakeOrders(): Observable<any[]> {
+    return this.http.get<any[]>('https://localhost:7196/api/CustomCakeOrder/CustomOrderGet');
+  }
+
   uploadCustomImage(file: File): Observable<{ path: string }> {
     const formData = new FormData();
     formData.append('image', file);

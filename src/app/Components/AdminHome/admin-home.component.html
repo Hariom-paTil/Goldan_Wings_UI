@@ -12,6 +12,10 @@
     <button class="admin-tab" [class.active]="currentSection === 'pop-orders'" (click)="setSection('pop-orders')">
       📦 Orders
     </button>
+    <button class="admin-tab" [class.active]="currentSection === 'custom-cake-orders'"
+      (click)="setSection('custom-cake-orders')">
+      🎂 Custom Orders
+    </button>
     <button class="admin-tab" [class.active]="currentSection === 'add-cakes'" (click)="setSection('add-cakes')">
       🍰 Add Cakes
     </button>
@@ -35,6 +39,12 @@
           <div class="card-icon">📦</div>
           <h3>Pop Orders</h3>
           <p>View and manage pending orders from customers.</p>
+        </div>
+
+        <div class="admin-card" (click)="setSection('custom-cake-orders')">
+          <div class="card-icon">🎂</div>
+          <h3>Custom Cake Orders</h3>
+          <p>View and manage personalized custom cake requests.</p>
         </div>
 
         <div class="admin-card" (click)="setSection('add-cakes')">
@@ -114,6 +124,63 @@
       <!-- Empty State -->
       <div class="placeholder" *ngIf="!loading && !error && orders.length === 0">
         <p>📦 No orders found</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Cake Orders Section -->
+  <div class="admin-home__body" *ngIf="currentSection === 'custom-cake-orders'">
+    <div class="section-container">
+      <h2>Custom Cake Orders</h2>
+      <p class="section-note">Review and manage customized cake requests.</p>
+
+      <!-- Loading State -->
+      <div class="loading-state" *ngIf="customCakeOrdersLoading">
+        <p>⏳ Loading custom orders...</p>
+      </div>
+
+      <!-- Error State -->
+      <div class="error-state" *ngIf="customCakeOrdersError">
+        <p>❌ {{ customCakeOrdersError }}</p>
+      </div>
+
+      <!-- Orders Table -->
+      <div class="orders-table-wrapper"
+        *ngIf="!customCakeOrdersLoading && !customCakeOrdersError && customCakeOrders.length > 0">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Cake ID</th>
+              <th>Cake Name</th>
+              <th>Size</th>
+              <th>Decoration</th>
+              <th>Notes</th>
+              <th>Reference Image</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of customCakeOrders" class="order-row">
+              <td>#{{ order.orderID }}</td>
+              <td>{{ order.cakeID }}</td>
+              <td>{{ order.cakeName }}</td>
+              <td>{{ order.cakeSize }}</td>
+              <td>{{ order.flowerDecoration || 'None' }}</td>
+              <td>{{ order.notes || 'N/A' }}</td>
+              <td class="image-cell">
+                <img *ngIf="order.cakeIdentityID === 101 && order.imageURL && order.imageURL !== 'string'"
+                  [src]="order.imageURL" alt="Photo Cake Reference" class="table-img" />
+                <span *ngIf="order.cakeIdentityID !== 101 || !order.imageURL || order.imageURL === 'string'">N/A</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty State -->
+      <div class="placeholder"
+        *ngIf="!customCakeOrdersLoading && !customCakeOrdersError && customCakeOrders.length === 0">
+        <p>🎂 No custom cake orders found</p>
       </div>
     </div>
   </div>

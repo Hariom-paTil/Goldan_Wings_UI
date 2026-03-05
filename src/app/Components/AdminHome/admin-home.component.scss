@@ -533,6 +533,20 @@
   box-shadow: 0 4px 12px rgba(240, 134, 50, 0.25);
 }
 
+.image-cell {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.table-img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(240, 134, 50, 0.3);
+  box-shadow: 0 2px 4px rgba(240, 134, 50, 0.15);
+}
+
 /* Loading & Error States */
 .loading-state,
 .error-state {

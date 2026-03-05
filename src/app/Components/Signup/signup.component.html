@@ -1,6 +1,10 @@
 <div class="modal-overlay" role="dialog" aria-modal="true">
   <div class="modal">
-    <h3>Sign In</h3>
+    <div class="modal-header-tabs">
+      <button type="button" class="tab-btn" [class.active]="mode === 'login'" (click)="setMode('login')">Login</button>
+      <button type="button" class="tab-btn" [class.active]="mode === 'signup'" (click)="setMode('signup')">Sign
+        Up</button>
+    </div>
 
     <form [formGroup]="form" (ngSubmit)="submit()">
       <label>
@@ -21,13 +25,9 @@
 
       <div class="actions">
         <button type="button" class="btn secondary" (click)="cancel()" [disabled]="loading">Cancel</button>
-        <button
-          type="submit"
-          class="btn primary"
-          [class.success-state]="success"
-          [disabled]="loading"
-        >
-          {{ success ? 'Happy Smile :)' : (loading ? 'Signing in...' : 'Sign In') }}
+        <button type="submit" class="btn primary" [class.success-state]="success" [disabled]="loading">
+          {{ success ? 'Happy Smile :)' : (loading ? (mode === 'login' ? 'Logging in...' : 'Signing up...') : (mode ===
+          'login' ? 'Login' : 'Sign Up')) }}
         </button>
       </div>
 

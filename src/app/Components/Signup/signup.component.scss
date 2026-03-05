@@ -24,6 +24,39 @@
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
 }
 
+.modal-header-tabs {
+  display: flex;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #777;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.tab-btn.active {
+  color: #ff6b6b;
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #ff6b6b;
+}
+
 .modal h3 {
   margin: 0 0 0.75rem 0;
 }
