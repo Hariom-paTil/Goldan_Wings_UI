@@ -1,17 +1,29 @@
-/* You can add global styles to this file, and also import other style files */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap');
 
+/* You can add global styles to this file, and also import other style files */
+
 $brand-primary: #f08632;
+
 $brand-secondary: #111111;
+
 $brand-contrast: #fff7ed;
+
 $accent: #f7c59f;
+
 $text-color: #20141a;
+
 $muted-color: #6b5b63;
+
 $brand-gradient: linear-gradient(120deg, #f5a340, #f08632);
+
 $radius: 12px;
+
 $shadow-1: 0 8px 20px rgba(0, 0, 0, 0.08);
+
 $shadow-2: 0 16px 36px rgba(0, 0, 0, 0.18);
+
 $dur-fast: 120ms;
+
 $dur-normal: 180ms;
 
 body {
@@ -138,6 +150,7 @@ button:focus-visible,
 }
 
 /* Responsive card & image defaults for a cleaner, more professional look */
+
 img {
   max-width: 100%;
   height: auto;
@@ -160,6 +173,7 @@ img {
 }
 
 /* Utility responsive adjustments */
+
 @media (max-width: 900px) {
   $radius: 10px;
 
