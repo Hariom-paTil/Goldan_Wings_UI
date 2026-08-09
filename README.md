@@ -1,27 +1,101 @@
-# GoldanWings
+# Goldan Wings UI
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.17.
+Frontend application for the **Goldan Wings** cake ordering platform, built with **Angular 17**.  
+The app supports customer ordering flows, custom cake requests, add-on treats, cart and checkout, plus an admin panel for operational tasks.
 
-## Development server
+## Features
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Responsive customer experience with hero, catalog, and modal-based flows
+- User signup/login with token-based request interceptor
+- Cake browsing and cart management (quantity updates, totals, checkout)
+- Custom cake ordering with image upload support
+- Add-on treats and combo selection
+- Admin login and guarded admin dashboard
+- Admin actions for:
+  - Viewing popular orders and custom cake orders
+  - Adding cakes
+  - Adding custom cakes
+  - Adding treat items
+- Angular SSR support with Express server entry
 
-## Code scaffolding
+## Tech Stack
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- Angular 17 (standalone components)
+- TypeScript
+- RxJS
+- Angular Router + Route Guard
+- Angular HTTP Interceptor
+- Express (SSR runtime)
+- Node upload utility server (Express + Multer)
 
-## Build
+## Project Structure
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```text
+src/
+  app/
+    Components/      # UI modules (About, Header, Admin, Cart, Customize, etc.)
+    Services/        # API and state services (auth, cakes, orders, cart, custom cake)
+    Guards/          # Route guards (admin access)
+    Interceptors/    # HTTP interceptors (auth token)
+    Interfaces/      # Shared TS interfaces
+```
 
-## Running unit tests
+## Prerequisites
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+- Node.js 18+
+- npm 9+
+- Running backend APIs (see **Backend Integration**)
 
-## Running end-to-end tests
+## Getting Started
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+1. Install dependencies:
 
-## Further help
+   ```bash
+   npm install
+   ```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+2. Start the Angular app:
+
+   ```bash
+   npm start
+   ```
+
+3. Open:
+   - `http://localhost:4200`
+
+## Available Scripts
+
+- `npm start` — run Angular development server
+- `npm run build` — production build
+- `npm run watch` — development build in watch mode
+- `npm test` — run unit tests (Karma)
+- `npm run serve:ssr:Goldan_Wings` — serve SSR build output
+- `npm run start:upload-server` — start local image upload server on `http://localhost:3000`
+
+## Backend Integration
+
+This UI depends on local backend services. Current service configuration includes:
+
+- `https://localhost:7196` (auth, orders, treats, custom cake APIs)
+- `http://localhost:5003` (cake APIs)
+- `http://localhost:3000/upload` (local file upload helper)
+
+If you face browser CORS errors, follow the setup in:
+
+- `BACKEND_CORS_SETUP.md`
+
+## Notes
+
+- API base URLs are currently hardcoded in Angular services.
+- Admin session token is kept in memory for the active browser session.
+- Uploaded files are written under `src/assets/...` through `upload-server.js`.
+
+## Build Output
+
+Build artifacts are generated under:
+
+- `dist/goldan-wings`
+
+## License
+
+This repository currently does not declare a license file.
